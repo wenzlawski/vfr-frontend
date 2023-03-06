@@ -1,5 +1,5 @@
 {
-  "name": "sveltekit-node-docker",
+  "name": "readanalytics",
   "version": "0.0.1",
   "scripts": {
     "dev": "vite dev",
@@ -11,7 +11,7 @@
     "test:unit": "vitest",
     "lint": "prettier --plugin-search-dir . --check . && eslint .",
     "format": "prettier --plugin-search-dir . --write .",
-    "commit": "cz",
+    "commit": "git add . && cz",
     "prepare": "husky install"
   },
   "devDependencies": {
