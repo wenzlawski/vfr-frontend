@@ -33,7 +33,7 @@
 		<FormTextInput
 			name="passwordConfirm"
 			label="Confirm Password"
-			type="passwordConfirm"
+			type="password"
 			required
 			errors={$errors}
 		/>

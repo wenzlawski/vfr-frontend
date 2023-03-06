@@ -50,7 +50,7 @@ export const actions = {
       title = "Unnamed"
     }
 
-    let data = {
+    const data = {
       title,
       content: await file.text(),
       owner: locals.user.id
@@ -74,7 +74,7 @@ export const actions = {
     const { url } = await request.formData();
     let title = '';
 
-    let text = await fetch("http://localhost:8080/api/v1/text/url_extract").then(res => res.text());
+    const text = await fetch("http://localhost:8080/api/v1/text/url_extract").then(res => res.text());
 
     console.log('text', text);
 
@@ -83,7 +83,7 @@ export const actions = {
       title = "Unnamed"
     }
 
-    let data = {
+    const data = {
       title,
       content: await text,
       owner: locals.user.id
@@ -109,7 +109,7 @@ export const actions = {
     }
 
     try {
-      const response = await locals.pb.collection('documents').create(document);
+      await locals.pb.collection('documents').create(document);
     } catch (err: any) {
       console.log('Error: ', err);
       throw error(err.status, err.message);

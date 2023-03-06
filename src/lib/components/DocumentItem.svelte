@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
 	import { enhance } from '$app/forms';
 	import { Modal } from '$lib/components';
 	import toast from 'svelte-french-toast';

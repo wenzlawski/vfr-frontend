@@ -1,27 +1,6 @@
-<script>
-	import { enhance } from '$app/forms';
-	import { Modal } from '$lib/components';
-	import toast from 'svelte-french-toast';
+<script lang="ts">
 	export let document;
 	let modalOpen;
-	let loading = false;
-	const submitDeleteDocument = () => {
-		loading = true;
-		return async ({ result, update }) => {
-			switch (result.type) {
-				case 'success':
-					toast.success('Document deleted successfully!');
-					await update();
-					break;
-				case 'error':
-					toast.error('Could not delete document. Try again later.');
-					break;
-				default:
-					await update();
-			}
-			loading = false;
-		};
-	};
 	$: modalOpen = false;
 </script>
 

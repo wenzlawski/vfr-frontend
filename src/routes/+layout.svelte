@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
 	// import './styles.css';
 	import '../app.css';
 	import { Toaster } from 'svelte-french-toast';

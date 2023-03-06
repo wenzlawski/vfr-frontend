@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
 	import { requestPasswordSchema } from '$lib/schemas';
 	import { createForm } from 'felte';
 	import { validator } from '@felte/validator-zod';
@@ -7,7 +7,10 @@
 	import { FormTextInput } from '$lib/components';
 
 	const { form, errors, isSubmitting, isValid } = createForm({
-		extend: [reporterDom(), validator({ schema: requestPasswordSchema })] // OR `extend: [validator],`
+		extend: [reporterDom(), validator({ schema: requestPasswordSchema })], // OR `extend: [validator],`
+		onSuccess: () => {
+			success = true;
+		}
 	});
 
 	let success;
@@ -25,7 +28,6 @@
 				cancel();
 			}
 		}}
-		on:feltesuccess={() => (success = true)}
 		method="POST"
 		class="flex flex-col items-center space-y-2 w-full pt-4"
 	>

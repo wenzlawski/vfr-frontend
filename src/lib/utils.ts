@@ -1,5 +1,3 @@
-const { randomBytes } = await import('node:crypto');
-
 export const serializeNonPOJOs = (obj) => {
   return structuredClone(obj);
 };
@@ -17,9 +15,8 @@ export const validateData = async (formData, schema) => {
       formData: data,
       errors: null
     };
-  } catch (err) {
+  } catch (err: any) {
     console.log('Error: ', err);
-    //@ts-ignore
     const errors = err.flatten();
     return {
       formData: body,
