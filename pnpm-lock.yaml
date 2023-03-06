@@ -30,7 +30,7 @@ specifiers:
   inquirer: ^9.1.4
   mrm: ^4.1.13
   object-to-formdata: ^4.4.2
-  pocketbase: ^0.10.1
+  pocketbase: ^0.10.2
   postcss: ^8.4.21
   pouchdb-browser: ^8.0.1
   prettier: ^2.8.0

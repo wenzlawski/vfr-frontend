@@ -27,7 +27,6 @@
 			Registration
 		</h2>
 		<FormTextInput name="email" label="Email" type="email" required errors={$errors} />
-		<FormTextInput name="username" label="Username" type="username" required errors={$errors} />
 		<FormTextInput name="name" label="Name" type="name" required errors={$errors} />
 		<FormTextInput name="password" label="Password" type="password" required errors={$errors} />
 		<FormTextInput
