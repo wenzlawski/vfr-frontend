@@ -6,6 +6,10 @@
 	import { page } from '$app/stores';
 	import { validateUrl } from '$lib/helpers';
 	import { theme } from '$lib/theme';
+	import { dev } from '$app/environment';
+	import { inject } from '@vercel/analytics';
+
+	inject({ mode: dev ? 'development' : 'production' });
 
 	let route;
 	let onFooter = ['/about'];

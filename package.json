@@ -55,8 +55,10 @@
   "dependencies": {
     "@felte/reporter-dom": "^1.1.5",
     "@felte/validator-zod": "^1.0.13",
+    "@sveltejs/adapter-vercel": "^2.3.0",
     "@syncedstore/core": "^0.4.3",
     "@types/pouchdb": "^6.4.0",
+    "@vercel/analytics": "^0.1.11",
     "daisyui": "^2.50.1",
     "felte": "^1.2.7",
     "mrm": "^4.1.13",
