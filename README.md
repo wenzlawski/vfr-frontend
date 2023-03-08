@@ -16,6 +16,16 @@ npm install
 npm run test
 ```
 
+## Details
+
+### Technologies used
+
+- SvelteKit
+- TailwindCSS
+- JEST
+- Docker
+- CouchDB, PouchDB, RxDB
+
 ## Author
 
 👤 **Marc Wenzlawski**
