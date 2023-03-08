@@ -4,23 +4,17 @@
 	import { Input, SidePane, ContentArea } from '$lib/components';
 	import { Pane, Splitpanes } from 'svelte-splitpanes';
 
-	import { onMount } from 'svelte';
-
 	// Ensure execution only on the browser, after the pouchdb script has loaded.
-	onMount(async function () {
-		var db = new PouchDB('my_database');
-		console.log({ PouchDB });
-		console.log({ db });
-	});
+	// onMount(async function () {
+	// 	var db = new PouchDB('my_database');
+	// 	console.log({ PouchDB });
+	// 	console.log({ db });
+	// });
 
 	export let data;
 	export let form;
 	let loading = false;
 	let visible = true;
-
-	function onClick() {
-		visible = !visible;
-	}
 
 	const submitUpdateDocument = () => {
 		loading = true;
@@ -52,21 +46,16 @@
 			enctype="multipart/form-data"
 			use:enhance={submitUpdateDocument}
 		>
-			<Input
-				id="title"
-				label="Document title"
-				value={data.document.title}
-				errors={form?.errors?.title}
-			/>
+			<Input id="title" label="Document title" value={data.document.title} />
 			<ContentArea
+				errors={undefined}
 				id="content"
 				label="Document content"
 				value={data.document.content}
-				errors={form?.errors?.content}
 			/>
 		</form>
 	</Pane>
-	<Pane snapSize={10}>
+	<Pane snapSize={10} size={0}>
 		<h2 style="margin: 0">This is a title</h2>
 
 		<div class="entities" style="line-height: 2.5; direction: ltr">

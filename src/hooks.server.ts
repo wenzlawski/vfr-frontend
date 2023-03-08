@@ -1,51 +1,47 @@
-import { serializeNonPOJOs } from '$lib/helpers';
-import PocketBase from 'pocketbase';
-import { redirect, type Handle } from '@sveltejs/kit'
-import { validateUrl } from '$lib/helpers';
+import { redirect, type Handle } from '@sveltejs/kit';
+import { SvelteKitAuth } from '@auth/sveltekit';
+import GitHub from '@auth/core/providers/github';
+import GoogleProvider from '@auth/core/providers/google';
+import clientPromise from '$lib/mongodb';
+import { MongoDBAdapter } from '@next-auth/mongodb-adapter';
+import type { Provider } from '@auth/core/providers';
+import type { Adapter } from '@auth/core/adapters';
+import { sequence } from '@sveltejs/kit/hooks';
 
-const protectedRoutes = [
-  "/settings",
-  "/documents",
-]
+// src/hooks.server.ts
 
-export const handle: Handle = async ({ event, resolve }) => {
-  const validDomains = /^(.*)?\.?localhost.*$/;
-  let cors = '';
+async function authorization({ event, resolve }) {
+	// Protect any routes under /authenticated
+	const session = await event.locals.getSession();
+	if (event.url.pathname.startsWith('/settings') || event.url.pathname.startsWith('/documents')) {
+		if (!session) {
+			throw redirect(303, '/auth');
+		}
+	}
 
-  if (validDomains.test(event.url.hostname)) {
-    // cors = `https://${event.url.hostname}`;
-    cors = '*';
-  }
+	// If the request is still here, just proceed as normally
+	const result = await resolve(event, {
+		transformPageChunk: ({ html }) => html
+	});
+	return result;
+}
 
-  event.locals.pb = new PocketBase("http://localhost:8090");
-  event.locals.pb.authStore.loadFromCookie(event.request.headers.get('cookie') || '');
-
-  if (event.locals.pb.authStore.isValid) {
-    event.locals.user = serializeNonPOJOs(event.locals.pb.authStore.model);
-  }
-
-  if (!event.locals.user && validateUrl(event.url.pathname, protectedRoutes)) {
-    throw redirect(303, '/login');
-  }
-
-  const response = await resolve(event);
-
-  // Apply CORS header for API routes
-  if (event.url.pathname.startsWith('/api')) {
-    // if (event.request.method === 'OPTIONS' && cors) {
-    //   return new Response(null, {
-    //     headers: {
-    //       'Access-Control-Allow-Methods': 'POST, GET, OPTIONS, DELETE',
-    //       'Access-Control-Allow-Origin': cors,
-    //     }
-    //   });
-    // }
-    response.headers.append('Access-Control-Allow-Origin', cors);
-  }
-
-
-  // TODO: secure before deployment
-  response.headers.set('set-cookie', event.locals.pb.authStore.exportToCookie({ secure: false }));
-
-  return response;
-};
+export const handle: Handle = sequence(
+	SvelteKitAuth({
+		providers: [
+			GitHub({
+				clientId: import.meta.env.GITHUB_ID,
+				clientSecret: import.meta.env.GITHUB_SECRET
+			}) as Provider,
+			// TODO: Handle refresh token https://next-auth.js.org/providers/google
+			GoogleProvider({
+				clientId: import.meta.env.GOOGLE_CLIENT_ID,
+				clientSecret: import.meta.env.GOOGLE_CLIENT_SECRET
+			}) as Provider
+			// TODO: Add email provider
+			// TODO: Add Apple provider
+		],
+		adapter: MongoDBAdapter(clientPromise) as Adapter
+	}),
+	authorization
+);

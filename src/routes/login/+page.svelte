@@ -5,6 +5,7 @@
 	import reporterDom from '@felte/reporter-dom';
 	import { enhance } from '$app/forms';
 	import { FormTextInput } from '$lib/components';
+	import { signIn } from '@auth/sveltekit/client';
 
 	const { form, errors, isSubmitting, isValid } = createForm({
 		extend: [reporterDom(), validator({ schema: loginUserSchema })] // OR `extend: [validator],`
@@ -35,6 +36,14 @@
 				type="submit"
 				class="btn btn-primary w-full block p-2 transition-colors hover:bg-blue-400"
 				>{!$isSubmitting ? 'Login' : 'Loading...'}</button
+			>
+		</div>
+		<div class="w-full max-w-md pt-2">
+			<button
+				type="submit"
+				on:click={() => signIn('github')}
+				class="btn btn-primary w-full block p-2 transition-colors hover:bg-blue-400"
+				>Sign In with GitHub</button
 			>
 		</div>
 	</form>

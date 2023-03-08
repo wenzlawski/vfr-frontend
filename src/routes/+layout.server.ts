@@ -1,13 +1,7 @@
-export const load = ({ locals, route}) => {
-  if (locals.user) {
-    return {
-      user: locals.user,
-      route: route
-    };
-  }
+import type { LayoutServerLoad } from './$types';
 
-  return {
-    user: undefined,
-    route: route
-  }
+export const load: LayoutServerLoad = async (event) => {
+	return {
+		session: await event.locals.getSession()
+	};
 };
