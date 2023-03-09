@@ -4,16 +4,19 @@ import TextDocument from '$lib/models/document';
 import type { ObjectId } from 'mongodb';
 import { error } from '@sveltejs/kit';
 
-export async function insertDocument(createdBy: ObjectId) {
+export async function insertDocument(data) {
 	await dbConnect();
-	const doc = new TextDocument({
-		createdBy
-	});
+	const doc = new TextDocument(data);
 	doc.save();
 	return doc;
 }
 
-export async function getDocumentIds(owner: ObjectId, limit = 10, skip = 0) {
+export async function deleteDocument(docId: string) {
+	await dbConnect();
+	await TextDocument.findByIdAndDelete(docId);
+}
+
+export async function getDocuments(owner: ObjectId, limit = 10, skip = 0) {
 	await dbConnect();
 	const docs = await TextDocument.find({ createdBy: owner }).skip(skip).limit(limit).sort({
 		createdAt: 'asc'
@@ -32,10 +35,20 @@ export async function getDocumentIds(owner: ObjectId, limit = 10, skip = 0) {
 	return docs.map((doc) => doc._id);
 }
 
-export async function getAllDocuments(owner: ObjectId) {
+export async function getDocumentsNoContent(owner: ObjectId, limit = 10, skip = 0) {
 	await dbConnect();
-	const docs = await TextDocument.find({ createdBy: owner });
-	return docs;
+	await dbConnect();
+	const docs = await TextDocument.find({ createdBy: owner }).skip(skip).limit(limit).sort({
+		createdAt: 'asc'
+	});
+
+	return docs.map((doc) => {
+		return {
+			id: doc._id.toString(),
+			title: doc.title,
+			createdAt: doc.createdAt
+		};
+	});
 }
 
 export async function getDocumentById(id: ObjectId, owner: ObjectId) {

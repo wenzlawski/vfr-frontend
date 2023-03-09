@@ -1,12 +1,13 @@
 import { error, redirect } from '@sveltejs/kit';
 import { serializeNonPOJOs } from '$lib/utils';
-import { getDocumentIds, insertDocument } from '$lib/db/document';
+import { deleteDocument, getDocumentsNoContent, insertDocument } from '$lib/db/document';
+import { extract } from '@extractus/article-extractor';
 
 export const load = async ({ locals }) => {
 	const getUsersDocuments = async (userId) => {
 		try {
 			const documents = serializeNonPOJOs(
-				await getDocumentIds((await locals.getSession())?.user?.id)
+				await getDocumentsNoContent((await locals.getSession())?.user?.id)
 			);
 			console.log('documents', documents);
 			return documents;
@@ -27,10 +28,11 @@ export const load = async ({ locals }) => {
 
 export const actions = {
 	deleteDocument: async ({ request, locals }) => {
-		const { id } = Object.fromEntries(await request.formData());
+		const data = await request.formData();
+		const id = data.get('id');
 
 		try {
-			await locals.pb.collection('documents').delete(id);
+			await deleteDocument(id);
 		} catch (err: any) {
 			console.log('Error: ', err);
 			throw error(err.status, err.message);
@@ -40,76 +42,50 @@ export const actions = {
 		};
 	},
 
-	upload: async ({ request, locals }) => {
-		console.log('uploading document...');
-
-		const formData = await request.formData();
-		const file = formData.get('file') as File;
-		console.log('file', file);
-
-		let title = formData.get('title');
-
-		if (!title) {
-			title = 'Unnamed';
-		}
-
-		const data = {
-			title,
-			content: await file.text(),
-			owner: locals.user.id
-		};
-
-		let result;
-
-		try {
-			result = await locals.pb.collection('documents').create(data);
-		} catch (err: any) {
-			console.log('Error: ', err);
-			throw error(err.status, err.message);
-		}
-
-		throw redirect(303, `/documents/${result.id}`);
-	},
-
 	upload_url: async ({ request, locals }) => {
 		console.log('uploading document...');
 
-		const { url } = await request.formData();
-		let title = '';
+		const fdata = await request.formData();
+		const url = fdata.get('url') as string;
+		console.log('data', fdata);
+		console.log('url', url);
 
-		const text = await fetch('http://localhost:8080/api/v1/text/url_extract').then((res) =>
-			res.text()
-		);
+		let article;
 
-		console.log('text', text);
+		try {
+			article = await extract(url);
+			console.log(article);
+		} catch (err) {
+			console.error(err);
+		}
+		console.log('article', article);
 
-		if (!title) {
-			title = 'Unnamed';
+		if (!article) {
+			return error(300, 'Unable to extract article from URL');
 		}
 
 		const data = {
-			title,
-			content: await text,
-			owner: locals.user.id
+			title: article.title,
+			content: article.content,
+			createdBy: (await locals.getSession())?.user?.id
 		};
 
-		let result;
+		let id;
 
 		try {
-			result = await locals.pb.collection('documents').create(data);
+			id = await insertDocument(data)._id;
 		} catch (err: any) {
 			console.log('Error: ', err);
 			throw error(err.status, err.message);
 		}
-
-		throw redirect(303, `/documents/${result.id}`);
+		throw redirect(303, `/documents/${id}`);
 	},
 
 	create: async ({ locals }) => {
 		let response;
 
 		try {
-			response = await insertDocument((await locals.getSession())?.user?.id);
+			response = await insertDocument({ createdBy: (await locals.getSession())?.user?.id });
 		} catch (err: any) {
 			console.log('Error: ', err);
 			throw error(err.status, err.message);

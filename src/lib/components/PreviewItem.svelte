@@ -8,13 +8,8 @@
 <div
 	class="card bg-base-100 justify-center justify-self-center shadow-lg border-solid h-48 border-2 border-indigo-600 w-4/5 hover:border-primary"
 >
-	{console.log(JSON.stringify(document))}
 	<a href="/documents/{document.id}">
 		<!-- <figure><img src="/images/stock/photo-1606107557195-0e29a4b5b4aa.jpg" alt="Shoes" /></figure> -->
-		<p class="text-[0.5rem] px-8 py-5 hover:no-underline">
-			<!-- {document.content.substring(0, 500)} -->
-			{document.content}
-		</p>
 		<div class="card-body">
 			<h2 class="card-title">
 				{document.title}

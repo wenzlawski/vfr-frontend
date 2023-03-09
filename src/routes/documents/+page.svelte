@@ -48,7 +48,12 @@
 				<h3 class="text-2xl">Upload from url</h3>
 				<form class="mt-8 space-y-3" method="POST" action="?/upload_url" use:enhance>
 					<p class="text-base font-normal mt-2">Upload URL text to your documents.</p>
-					<input type="text" placeholder="Type here" class="input input-bordered w-full max-w-xs" />
+					<input
+						type="text"
+						name="url"
+						placeholder="Type here"
+						class="input input-bordered w-full max-w-xs"
+					/>
 					<div class="mt-5">
 						<label for="url" class="btn btn-outline">Cancel</label>
 						<button type="submit" class="btn btn-primary">Upload</button>
@@ -63,7 +68,6 @@
 	<div class="container m-auto pt-5 grid grid-cols-2 gap-x-12 gap-y-8 justify-center">
 		<PreviewItemNew />
 		{#each data.documents as document (document.id)}
-			{JSON.stringify(document)}
 			<PreviewItem {document} />
 		{/each}
 	</div>
