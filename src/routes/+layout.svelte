@@ -6,17 +6,17 @@
 	import { page } from '$app/stores';
 	import { validateUrl } from '$lib/helpers';
 	import { theme } from '$lib/theme';
-	import { dev } from '$app/environment';
-	import { inject } from '@vercel/analytics';
+	// import { dev } from '$app/environment';
+	// import { inject } from '@vercel/analytics';
 
-	inject({ mode: dev ? 'development' : 'production' });
+	// inject({ mode: dev ? 'development' : 'production' });
 
 	let route;
 	let onFooter = ['/about'];
 	let showFooter = true;
 
-	$: route = $page.data.route.id;
-	$: showFooter = validateUrl(route, onFooter) || route === '/';
+	$: route = $page.data.route?.id;
+	$: showFooter = (route && validateUrl(route, onFooter)) || route === '/';
 </script>
 
 <div class="flex flex-col h-full flex-wrap min-h-screen w-full" data-theme={$theme}>

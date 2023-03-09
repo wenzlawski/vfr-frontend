@@ -8,12 +8,15 @@
 <div
 	class="card bg-base-100 justify-center justify-self-center shadow-lg border-solid h-48 border-2 border-indigo-600 w-4/5 hover:border-primary"
 >
-	<a href="/documents/new">
-		<!-- <figure><img src="/images/stock/photo-1606107557195-0e29a4b5b4aa.jpg" alt="Shoes" /></figure> -->
+	<form method="POST" action="?/create" use:enhance class="mx-auto">
+		<!-- <input type="hidden" name="type" value="document" /> -->
+		<button type="submit" class="text-lg">Create a new document</button>
+	</form>
+	<!-- <a href="/documents/new">
 		<div class="card-body">
 			<h2 class="card-title">New Document</h2>
 		</div>
-	</a>
+	</a> -->
 </div>
 
 <!-- <div class="w-full h-28 flex items-center justify-between">

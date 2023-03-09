@@ -1,3 +1,7 @@
+<script>
+	import { enhance } from '$app/forms';
+</script>
+
 <svelte:head>
 	<title>About</title>
 	<meta name="description" content="About this app" />
@@ -18,4 +22,7 @@
 		Because of that, we don't need to load any JavaScript. Try viewing the page's source, or opening
 		the devtools network panel and reloading.
 	</p>
+	<form method="POST" use:enhance>
+		<button type="submit" class="button">Test insert</button>
+	</form>
 </div>

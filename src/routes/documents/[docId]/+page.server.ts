@@ -1,18 +1,21 @@
+import { getDocumentById } from '$lib/db/document';
 import { serializeNonPOJOs } from '$lib/utils';
 import { error } from '@sveltejs/kit';
 
 export const load = ({ locals, params }) => {
-  const getDocument = async (docId) => {
-    try {
-      const document = serializeNonPOJOs(await locals.pb.collection('documents').getOne(docId));
-      return document;
-    } catch (err: any) {
-      console.log('Error: ', err);
-      throw error(err.status, err.message);
-    }
-  };
+	const getDocument = async (docId) => {
+		const userId = await locals.getSession()?.user?.id;
+		console.log('locals', locals);
+		try {
+			const document = serializeNonPOJOs(await getDocumentById(docId, userId));
+			return document;
+		} catch (err: any) {
+			console.log('Error: ', err);
+			throw error(err.status, err.message);
+		}
+	};
 
-  return {
-    document: getDocument(params.docId)
-  };
+	return {
+		document: getDocument(params.docId)
+	};
 };

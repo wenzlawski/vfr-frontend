@@ -1,7 +1,6 @@
-import type { LayoutServerLoad } from './$types';
-
-export const load: LayoutServerLoad = async (event) => {
+export async function load({ locals, route }) {
 	return {
-		session: await event.locals.getSession()
+		session: await locals.getSession(),
+		route
 	};
-};
+}

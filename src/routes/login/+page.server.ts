@@ -1,28 +1,25 @@
-import type { Actions } from './$types';
-import { redirect } from '@sveltejs/kit';
+// import type { Actions } from './$types';
+// import { redirect } from '@sveltejs/kit';
 
-export const actions: Actions = {
-  default: async ({ request, locals, url }) => {
-    const data = Object.fromEntries(await request.formData()) as {
-      email: string
-      password: string
-    }
+export async function load({ fetch }) {
+	return {
+		providers: fetch('/auth/providers').then((res) => res.json())
+	};
+}
 
-    console.log('logging in with', data);
+// export const actions: Actions = {
+// 	default: async ({ request, locals, url }) => {
+// 		const data = Object.fromEntries(await request.formData()) as {
+// 			email: string;
+// 			password: string;
+// 		};
 
-    try {
-      await locals.pb.collection('users').authWithPassword(data.email, data.password)
-    } catch (err: any) {
-      console.log("error", err);
-      return {
-        error: true,
-        msg: err.data.message
-      }
-    }
-    if (url.searchParams.has('redirectTo')) {
-      throw redirect(303, url.searchParams.get('redirectTo')?.toString() ?? '/');
-    }
+// 		console.log('logging in with', data);
 
-    throw redirect(303, "/");
-  },
-};
+// 		if (url.searchParams.has('redirectTo')) {
+// 			throw redirect(303, url.searchParams.get('redirectTo')?.toString() ?? '/');
+// 		}
+
+// 		throw redirect(303, '/');
+// 	}
+// };

@@ -60,9 +60,10 @@
 			</div>
 		</Modal>
 	</div>
-	<div class="container m-auto grid grid-cols-2 gap-x-12 gap-y-8 justify-center">
+	<div class="container m-auto pt-5 grid grid-cols-2 gap-x-12 gap-y-8 justify-center">
 		<PreviewItemNew />
 		{#each data.documents as document (document.id)}
+			{JSON.stringify(document)}
 			<PreviewItem {document} />
 		{/each}
 	</div>

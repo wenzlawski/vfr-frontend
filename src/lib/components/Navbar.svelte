@@ -1,8 +1,6 @@
 <script lang="ts">
 	import { theme } from '$lib/theme';
 	import logo from '$lib/images/logo.svg';
-	import { browser } from '$app/environment';
-	import { getImageURL } from '$lib/utils';
 	import { page } from '$app/stores';
 	import { validateUrl } from '$lib/helpers';
 
@@ -11,7 +9,7 @@
 	let onLogin = false;
 
 	$: route = $page.data.route.id;
-	$: onLogin = validateUrl(route, onAuth);
+	$: onLogin = route && validateUrl(route, onAuth);
 </script>
 
 <nav class="navbar border-b bg-base-100">
@@ -55,7 +53,7 @@
 			</svg>
 		</label>
 		<a href="/about" class="btn btn-primary btn-outline mr-1">About</a>
-		{#if !onLogin && $page.data.user}
+		{#if !onLogin && $page.data.session}
 			<div class="dropdown dropdown-end mr-4">
 				<a href="/documents" class="btn btn-primary btn-outline">Documents</a>
 				<a href="/documents/new" class="btn btn-primary btn-outline">+ New</a>
@@ -66,13 +64,8 @@
 				<label tabindex="0" class="btn btn-ghost btn-circle avatar">
 					<div class="w-10 rounded-full">
 						<img
-							src={$page.data.user?.avatar
-								? getImageURL(
-										$page.data.user?.collectionId,
-										$page.data.user?.id,
-										$page.data.user?.avatar
-								  )
-								: `https://ui-avatars.com/api/?name=${$page.data.user?.name}`}
+							src={$page.data.session.user?.image ||
+								`https://ui-avatars.com/api/?name=${$page.data.session.user?.name}`}
 							alt="User avatar"
 						/>
 					</div>
@@ -87,7 +80,7 @@
 					</li>
 					<li><a href="/settings">Settings</a></li>
 					<li>
-						<form action="/logout" method="POST">
+						<form action="/auth/signout" method="POST">
 							<button type="submit" class="w-full text-start">Logout</button>
 						</form>
 					</li>

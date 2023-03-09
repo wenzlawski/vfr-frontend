@@ -23,7 +23,7 @@
 			<button on:click={() => signOut()} class="button">Sign out</button>
 		{:else}
 			<span class="notSignedInText">You are not signed in</span>
-			<a href="/login" class="button">Sign in</a>
+			<a href="/auth/signin" class="button">Sign in</a>
 		{/if}
 	</p>
 
