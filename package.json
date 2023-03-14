@@ -64,8 +64,12 @@
     "@felte/validator-zod": "^1.0.13",
     "@next-auth/mongodb-adapter": "^1.1.1",
     "@sveltejs/adapter-vercel": "^2.3.0",
+    "@syncedstore/core": "^0.4.3",
+    "@syncedstore/svelte": "^0.4.3",
     "@tiptap/core": "2.0.0-beta.220",
-    "@tiptap/pm": "2.0.0-beta.220",
+    "@tiptap/extension-collaboration": "2.0.0-beta.220",
+    "@tiptap/extension-collaboration-cursor": "2.0.0-beta.220",
+    "@tiptap/extension-placeholder": "2.0.0-beta.220",
     "@tiptap/starter-kit": "2.0.0-beta.220",
     "@vercel/analytics": "^0.1.11",
     "bcrypt": "^5.1.0",
@@ -79,6 +83,9 @@
     "svelte-french-toast": "^1.0.3",
     "svelte-preprocess": "^5.0.1",
     "svelte-splitpanes": "^0.7.12",
+    "svelte-tiptap": "^0.7.0",
+    "y-webrtc": "^10.2.4",
+    "yjs": "^13.5.49",
     "zod": "^3.20.6"
   },
   "config": {

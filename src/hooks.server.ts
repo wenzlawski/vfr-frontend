@@ -23,7 +23,11 @@ import {
 async function authorization({ event, resolve }) {
 	// Protect any routes under /authenticated
 	const session = await event.locals.getSession();
-	if (event.url.pathname.startsWith('/settings') || event.url.pathname.startsWith('/documents')) {
+	if (
+		event.url.pathname.startsWith('/settings') ||
+		event.url.pathname.startsWith('/documents') ||
+		event.url.pathname.startsWith('/api')
+	) {
 		if (!session) {
 			throw redirect(303, '/auth');
 		}
