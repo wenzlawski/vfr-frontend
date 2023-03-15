@@ -33,8 +33,29 @@ export async function getDocuments(owner: ObjectId, limit = 10, skip = 0) {
 	});
 }
 
-export async function getDocumentsNoContent(owner: ObjectId | string, limit = 10, skip = 0) {
+export async function getDocumentsPreview(
+	owner: ObjectId | string,
+	limit = 10,
+	skip = 0,
+	length = 200
+) {
 	await dbConnect();
+	const docs = await TextDocument.find({ createdBy: owner }).skip(skip).limit(limit).sort({
+		lastModified: 'desc'
+	});
+
+	return docs.map((doc) => {
+		return {
+			id: doc._id.toString(),
+			title: doc.title,
+			content: doc.content.substring(0, length),
+			createdAt: doc.createdAt,
+			lastModified: doc.lastModified
+		};
+	});
+}
+
+export async function getDocumentsNoContent(owner: ObjectId | string, limit = 10, skip = 0) {
 	await dbConnect();
 	const docs = await TextDocument.find({ createdBy: owner }).skip(skip).limit(limit).sort({
 		lastModified: 'desc'

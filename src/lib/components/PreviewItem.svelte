@@ -9,14 +9,14 @@
 </script>
 
 <DocCard>
-	<a href="/documents/{document.id}" slot="body" class="w-full h-full">
+	<a href="/documents/{document.id}" class="w-full h-[66%] overflow-hidden text-ellipsis">
 		<!-- <figure><img src="/images/stock/photo-1606107557195-0e29a4b5b4aa.jpg" alt="Shoes" /></figure> -->
-		<h2 class="card-title text-md text-ellipsis overflow-hidden h-auto whitespace-nowrap">
+		<h2 class="text-lg font-semibold mb-1 truncate w-auto">
 			{document.title !== '' ? document.title : 'Untitled document'}
 		</h2>
-		<p class="h-full">This is the preview text</p>
+		<p>{document.content}</p>
 	</a>
-	<div class="border h-14" slot="other">
+	<div class="border h-14 absolute bottom-0 w-[84%] mb-3">
 		<form
 			method="POST"
 			use:enhance={() => {

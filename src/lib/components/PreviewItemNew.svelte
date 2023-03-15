@@ -6,8 +6,11 @@
 </script>
 
 <DocCard>
-	<form slot="body" method="POST" action="/documents?/create" use:enhance class="mx-auto">
+	<form method="POST" action="/documents?/create" use:enhance class="mx-auto">
 		<!-- <input type="hidden" name="type" value="document" /> -->
-		<button type="submit" class="text-lg">Create a new document</button>
+		<label>
+			<!-- <ion-icon name="create-outline" class="text-[3rem]" /> -->
+			<button type="submit" class="text-lg">Create a new document</button>
+		</label>
 	</form>
 </DocCard>

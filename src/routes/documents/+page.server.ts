@@ -1,12 +1,17 @@
 import { error, redirect } from '@sveltejs/kit';
 import { serializeNonPOJOs } from '$lib/utils';
-import { deleteDocument, getDocumentsNoContent, insertDocument } from '$lib/db/document';
+import {
+	deleteDocument,
+	getDocumentsNoContent,
+	getDocumentsPreview,
+	insertDocument
+} from '$lib/db/document';
 import { extract } from '@extractus/article-extractor';
 
 export const load = async ({ locals }) => {
 	const getUsersDocuments = async (userId) => {
 		try {
-			const documents = serializeNonPOJOs(await getDocumentsNoContent(userId));
+			const documents = serializeNonPOJOs(await getDocumentsPreview(userId));
 			return documents;
 		} catch (err: any) {
 			console.log('Error: ', err);

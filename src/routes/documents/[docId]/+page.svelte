@@ -43,7 +43,9 @@
 			<Tiptap bind:this={editor} value={data.document._doc.content} {update} />
 		</div>
 	</Pane>
-	<Pane snapSize={10} size={data.document._doc.tabSize || 0} />
+	<Pane snapSize={10} size={data.document._doc.tabSize || 0}>
+		<p>Pane conent</p>
+	</Pane>
 </Splitpanes>
 
 <style global lang="scss">
