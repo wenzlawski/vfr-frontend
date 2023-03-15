@@ -19,7 +19,7 @@ export async function deleteDocument(docId: string) {
 export async function getDocuments(owner: ObjectId, limit = 10, skip = 0) {
 	await dbConnect();
 	const docs = await TextDocument.find({ createdBy: owner }).skip(skip).limit(limit).sort({
-		createdAt: 'asc'
+		lastModifiedAt: 'desc'
 	});
 
 	return docs.map((doc) => {
@@ -27,32 +27,32 @@ export async function getDocuments(owner: ObjectId, limit = 10, skip = 0) {
 			id: doc._id.toString(),
 			title: doc.title,
 			content: doc.content,
-			createdAt: doc.createdAt
+			createdAt: doc.createdAt,
+			lastModified: doc.lastModified
 		};
 	});
-
-	// const docs = await TextDocument.find({ createdBy: owner }).select('_id').limit(limit).skip(skip);
-	return docs.map((doc) => doc._id);
 }
 
 export async function getDocumentsNoContent(owner: ObjectId | string, limit = 10, skip = 0) {
 	await dbConnect();
 	await dbConnect();
 	const docs = await TextDocument.find({ createdBy: owner }).skip(skip).limit(limit).sort({
-		createdAt: 'asc'
+		lastModified: 'desc'
 	});
 
 	return docs.map((doc) => {
 		return {
 			id: doc._id.toString(),
 			title: doc.title,
-			createdAt: doc.createdAt
+			createdAt: doc.createdAt,
+			lastModified: doc.lastModified
 		};
 	});
 }
 
 export async function updateDocument(id: ObjectId | string, data) {
 	await dbConnect();
+	data.lastModified = new Date();
 	console.log('updating with data: ', data);
 
 	const doc = await TextDocument.findByIdAndUpdate(id, data, { new: true });

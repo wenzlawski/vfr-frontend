@@ -6,6 +6,7 @@
 
 	export let data;
 	let timer;
+	let editor;
 
 	console.log('data', data);
 
@@ -31,7 +32,7 @@
 	}
 
 	function refocusOnEditor() {
-		console.log('refocusOnEditor');
+		editor.focus();
 	}
 </script>
 
@@ -39,7 +40,7 @@
 	<Pane minSize={20}>
 		<div class="ml-14 mr-10 mt-8 mb-[10%] h-full">
 			<TitleInput content={data.document._doc.title} {update} {refocusOnEditor} />
-			<Tiptap value={data.document._doc.content} {update} />
+			<Tiptap bind:this={editor} value={data.document._doc.content} {update} />
 		</div>
 	</Pane>
 	<Pane snapSize={10} size={data.document._doc.tabSize || 0} />

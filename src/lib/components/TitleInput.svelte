@@ -3,18 +3,31 @@
 	import StarterKit from '@tiptap/starter-kit';
 	import { createEditor, EditorContent } from 'svelte-tiptap';
 	import Placeholder from '@tiptap/extension-placeholder';
+	import { Extension } from '@tiptap/core';
 
 	let editor;
 	export let content = '';
 	export let update = (_) => {};
 	export let refocusOnEditor = () => {};
+
+	const DisableEnter = Extension.create({
+		addKeyboardShortcuts() {
+			return {
+				Enter: () => {
+					refocusOnEditor();
+					return true;
+				}
+			};
+		}
+	});
 	onMount(() => {
 		editor = createEditor({
 			extensions: [
 				StarterKit,
 				Placeholder.configure({
 					placeholder: 'Untitled document...'
-				})
+				}),
+				DisableEnter
 			],
 			editorProps: {
 				attributes: {
@@ -29,13 +42,6 @@
 			}
 		});
 	});
-
-	function handleEnter(event) {
-		if (event.key === 'Enter') {
-			event.preventDefault();
-			refocusOnEditor();
-		}
-	}
 </script>
 
-<EditorContent editor={$editor} on:keydown={handleEnter} />
+<EditorContent editor={$editor} />

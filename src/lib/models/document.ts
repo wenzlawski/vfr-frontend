@@ -8,6 +8,7 @@ export const docSch = new Schema({
 	content: { type: String, default: '' },
 	createdAt: { type: Date, default: Date.now },
 	createdBy: { type: ObjectId },
+	lastModified: { type: Date, default: Date.now },
 	tabSize: { type: Number, default: 0 }
 });
 

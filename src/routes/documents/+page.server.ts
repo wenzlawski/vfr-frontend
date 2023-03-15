@@ -14,9 +14,7 @@ export const load = async ({ locals }) => {
 		}
 	};
 
-	const id = locals.getSession().then((session) => {
-		session?.user?.id;
-	});
+	const id = (await locals.getSession())?.user.id;
 
 	return {
 		documents: getUsersDocuments(id)

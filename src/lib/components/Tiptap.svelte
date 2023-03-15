@@ -6,9 +6,11 @@
 
 	export let value = '';
 	export let update = (_) => {};
-
 	let editor;
-	let timer;
+
+	export function focus() {
+		$editor.commands.focus();
+	}
 
 	onMount(() => {
 		editor = createEditor({

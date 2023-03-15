@@ -65,9 +65,7 @@
 			</div>
 		</Modal>
 	</div>
-	<div
-		class="container pt-5 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-5 justify-between gap-x-8 gap-y-6"
-	>
+	<div class="container pt-5 grid grid-cols-3 lg:grid-cols-5 justify-between gap-x-8 gap-y-6">
 		<PreviewItemNew />
 		{#each data.documents as document (document.id)}
 			<PreviewItem {document} />
