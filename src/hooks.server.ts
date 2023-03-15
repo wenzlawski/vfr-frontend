@@ -17,22 +17,24 @@ import {
 	DISCORD_CLIENT_SECRET,
 	NEXTAUTH_SECRET
 } from '$env/static/private';
+import { updateUser } from '$lib/db/user';
 
 // src/hooks.server.ts
 
 async function theming({ event, resolve }) {
 	const theme = event.cookies.get('theme') || null;
-
-	// if (newTheme) {
-	// 	theme = newTheme;
-	// } else if (cookieTheme) {
-	// 	theme = cookieTheme;
-	// }
+	const session = await event.locals.getSession();
+	console.log('session', session);
 
 	if (theme) {
-		return await resolve(event, {
-			transformPageChunk: ({ html }) => html.replace('data-theme=""', `data-theme="${theme}"`)
-		});
+		if (theme !== session.user.theme) {
+			updateUser(session.user.id, { theme });
+		}
+		if (theme !== 'system') {
+			return await resolve(event, {
+				transformPageChunk: ({ html }) => html.replace('data-theme=""', `data-theme="${theme}"`)
+			});
+		}
 	}
 
 	const result = await resolve(event, {
@@ -98,6 +100,9 @@ export const handle: Handle = sequence(
 					// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 					// @ts-ignore
 					session.user.id = user.id;
+					// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+					// @ts-ignore
+					session.user.theme = user.theme;
 				}
 
 				return session;

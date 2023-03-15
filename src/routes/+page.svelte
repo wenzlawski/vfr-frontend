@@ -2,6 +2,15 @@
 	import { page } from '$app/stores';
 	import { signIn, signOut } from '@auth/sveltekit/client';
 	import Tiptap from '$lib/components/Tiptap.svelte';
+
+	window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (event) => {
+		const theme = event.matches ? 'dark' : 'light';
+		console.log('detected theme change.');
+
+		if ($page.data.theme === 'system') {
+			document.documentElement.setAttribute('data-theme', theme);
+		}
+	});
 </script>
 
 <svelte:head>

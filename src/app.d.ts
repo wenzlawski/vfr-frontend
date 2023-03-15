@@ -15,6 +15,7 @@ declare module '@auth/core' {
 	interface Session {
 		user: {
 			id: string;
+			theme: string;
 		} & DefaultSession['user'];
 	}
 }
