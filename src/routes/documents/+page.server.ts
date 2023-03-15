@@ -1,11 +1,6 @@
 import { error, redirect } from '@sveltejs/kit';
 import { serializeNonPOJOs } from '$lib/utils';
-import {
-	deleteDocument,
-	getDocumentsNoContent,
-	getDocumentsPreview,
-	insertDocument
-} from '$lib/db/document';
+import { deleteDocument, getDocumentsPreview, insertDocument } from '$lib/db/document';
 import { extract } from '@extractus/article-extractor';
 
 export const load = async ({ locals }) => {

@@ -1,18 +1,19 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
-	import { Input, TitleInput } from '$lib/components';
+	import { Analysis, Input, TitleInput } from '$lib/components';
 	import Tiptap from '$lib/components/Tiptap.svelte';
 	import { Pane, Splitpanes } from 'svelte-splitpanes';
+	import { writable } from 'svelte/store';
 
 	export let data;
 	let timer;
 	let editor;
 
-	console.log('data', data);
+	let pane = writable(data.document._doc.tabSize || 0);
 
-	function handleResize(event) {
-		console.log('event', event);
-		updateFn({ tabSize: event.detail[1].size });
+	function handleResized(size) {
+		updateFn({ tabSize: size });
+		$pane = size;
 	}
 
 	const update = (docData) => {
@@ -36,15 +37,39 @@
 	}
 </script>
 
-<Splitpanes theme="modern-theme" horizontal={false} on:resized={handleResize}>
+<Splitpanes
+	theme="modern-theme"
+	horizontal={false}
+	on:resized={(event) => handleResized(event.detail[1].size)}
+	on:resize={(event) => ($pane = event.detail[1].size)}
+>
 	<Pane minSize={20}>
-		<div class="ml-14 mr-10 mt-8 mb-[10%] h-full">
-			<TitleInput content={data.document._doc.title} {update} {refocusOnEditor} />
-			<Tiptap bind:this={editor} value={data.document._doc.content} {update} />
-		</div>
-	</Pane>
-	<Pane snapSize={10} size={data.document._doc.tabSize || 0}>
-		<p>Pane conent</p>
+		<div class="relative">
+			<div
+				class="mx-auto px-4 mt-8 mb-[10%] h-full md:max-w-2xl xl:max-w-3xl xl:flex justify-center items-center"
+			>
+				<div>
+					<TitleInput content={data.document._doc.title} {update} {refocusOnEditor} />
+					<Tiptap bind:this={editor} value={data.document._doc.content} {update} />
+				</div>
+			</div>
+			<div class:hidden={$pane !== 0} class="absolute top-0 right-0 mr-3 -translate-y-6">
+				<div class="flex justify-center items-center h-full">
+					<div class="flex flex-col justify-center items-center">
+						<button
+							class="btn btn-sm"
+							on:click={() => {
+								$pane = 40;
+								handleResized(40);
+							}}>Analyze the text</button
+						>
+					</div>
+				</div>
+			</div>
+		</div></Pane
+	>
+	<Pane snapSize={20} size={$pane}>
+		<Analysis />
 	</Pane>
 </Splitpanes>
 

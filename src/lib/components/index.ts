@@ -11,7 +11,11 @@ import ContentArea from './ContentArea.svelte';
 import FormTextInput from './FormTextInput.svelte';
 import TitleInput from './TitleInput.svelte';
 import DocCard from './DocCard.svelte';
+import Analysis from './Analysis.svelte';
+import BubbleMenu from './BubbleMenu.svelte';
 export {
+	BubbleMenu,
+	Analysis,
 	DocCard,
 	TitleInput,
 	FormTextInput,
