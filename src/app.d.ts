@@ -11,7 +11,7 @@ declare namespace App {
 	// interface Platform {}
 }
 
-declare module '@auth/core' {
+declare module '@auth/core/types' {
 	interface Session {
 		user: {
 			id: string;

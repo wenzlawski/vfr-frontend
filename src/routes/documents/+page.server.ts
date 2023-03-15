@@ -6,9 +6,7 @@ import { extract } from '@extractus/article-extractor';
 export const load = async ({ locals }) => {
 	const getUsersDocuments = async (userId) => {
 		try {
-			const documents = serializeNonPOJOs(
-				await getDocumentsNoContent((await locals.getSession())?.user?.id)
-			);
+			const documents = serializeNonPOJOs(await getDocumentsNoContent(userId));
 			return documents;
 		} catch (err: any) {
 			console.log('Error: ', err);
@@ -26,7 +24,7 @@ export const load = async ({ locals }) => {
 };
 
 export const actions = {
-	delete: async ({ request, locals }) => {
+	delete: async ({ request }) => {
 		const data = await request.formData();
 		const id = data.get('id') as string;
 
@@ -73,7 +71,7 @@ export const actions = {
 		let id;
 
 		try {
-			id = await insertDocument(data)._id;
+			id = (await insertDocument(data))._id;
 		} catch (err: any) {
 			console.log('Error: ', err);
 			throw error(err.status, err.message);
@@ -95,12 +93,12 @@ export const actions = {
 		throw redirect(303, `/documents/${response._id}`);
 	},
 
-	download: async ({ request, locals }) => {
+	download: async ({ request }) => {
 		const data = await request.formData();
 		const id = data.get('id') as string;
 
 		try {
-			console.log('downloading document...');
+			console.log('downloading document...', id);
 		} catch (err: any) {
 			console.log('Error: ', err);
 			throw error(err.status, err.message);

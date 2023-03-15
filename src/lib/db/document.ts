@@ -35,7 +35,7 @@ export async function getDocuments(owner: ObjectId, limit = 10, skip = 0) {
 	return docs.map((doc) => doc._id);
 }
 
-export async function getDocumentsNoContent(owner: ObjectId, limit = 10, skip = 0) {
+export async function getDocumentsNoContent(owner: ObjectId | string, limit = 10, skip = 0) {
 	await dbConnect();
 	await dbConnect();
 	const docs = await TextDocument.find({ createdBy: owner }).skip(skip).limit(limit).sort({
