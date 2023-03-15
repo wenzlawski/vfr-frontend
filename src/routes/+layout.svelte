@@ -1,6 +1,7 @@
 <script lang="ts">
 	// import './styles.css';
 	import '../app.css';
+	import Notifications from 'svelte-notifications';
 	import { Footer, Navbar } from '$lib/components';
 	import { page } from '$app/stores';
 	import { validateUrl } from '$lib/helpers';
@@ -17,21 +18,21 @@
 	$: showFooter = (route && validateUrl(route, onFooter)) || route === '/';
 </script>
 
-<div class="flex flex-col h-full flex-wrap min-h-screen w-full">
-	<header class="sticky shadow-sm top-0 bg-base-100">
-		<Navbar />
-	</header>
-	<main
-		class="h-full min-h-full flex-1 flex w-full min-w-full my-0 mx-auto box-border items-stretch"
-	>
-		<div class="mx-auto grow items-stretch">
-			<slot />
-		</div>
-	</main>
+<Notifications>
+	<div class="flex flex-col h-full flex-wrap min-h-screen w-full">
+		<header class="sticky shadow-sm top-0 bg-base-100">
+			<Navbar />
+		</header>
+		<main class="h-full min-h-full flex-1 flex m-0 box-border items-stretch">
+			<div class="grow items-stretch">
+				<slot />
+			</div>
+		</main>
 
-	{#if showFooter}
-		<Footer />
-	{:else}
-		<div />
-	{/if}
-</div>
+		{#if showFooter}
+			<Footer />
+		{:else}
+			<div />
+		{/if}
+	</div>
+</Notifications>

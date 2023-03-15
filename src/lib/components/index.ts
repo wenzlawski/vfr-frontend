@@ -10,7 +10,9 @@ import TextArea from './TextArea.svelte';
 import ContentArea from './ContentArea.svelte';
 import FormTextInput from './FormTextInput.svelte';
 import TitleInput from './TitleInput.svelte';
+import DocCard from './DocCard.svelte';
 export {
+	DocCard,
 	TitleInput,
 	FormTextInput,
 	DocumentItem,

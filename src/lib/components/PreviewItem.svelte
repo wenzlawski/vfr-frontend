@@ -1,45 +1,54 @@
 <script lang="ts">
-	import type TextDocument from '$lib/models/document';
+	import { enhance } from '$app/forms';
+	import DocCard from './DocCard.svelte';
 	export let document;
-	let modalOpen;
 	$: modalOpen = false;
+	import { getNotificationsContext } from 'svelte-notifications';
+
+	const { addNotification } = getNotificationsContext();
 </script>
 
-<div
-	class="card bg-base-100 justify-center justify-self-center shadow-lg border-solid h-48 border-2 border-indigo-600 w-4/5 hover:border-primary"
->
-	<a href="/documents/{document.id}">
+<DocCard>
+	<a href="/documents/{document.id}" slot="body" class="w-full h-full p-0">
 		<!-- <figure><img src="/images/stock/photo-1606107557195-0e29a4b5b4aa.jpg" alt="Shoes" /></figure> -->
-		<div class="card-body">
-			<h2 class="card-title">
-				{document.title}
-			</h2>
-		</div>
+		<h2 class="p-0 card-title text-ellipsis overflow-hidden h-auto whitespace-nowrap">
+			{document.title}
+		</h2>
+		<p class="h-full">This is the preview text</p>
 	</a>
-</div>
-
-<!-- <div class="w-full h-28 flex items-center justify-between">
-	<div class="flex flex-col w-full ml-4 h-full justify-center">
-		<a href="/documents/{document.id}" class="font-semibold text-lg">{document.title}</a>
-	</div>
-	<div class="flex items-center justify-end w-full">
-		<a href="/documents/{document.id}/edit" class="btn btn-outline">Edit Document</a>
-		<Modal label={document.id} checked={modalOpen}>
-			<span slot="trigger" class="btn btn-error ml-2">Delete</span>
-			<div slot="heading">
-				<h3 class="text-2xl">Delete {document.title}</h3>
-				<p class="text-base font-normal mt-2">
-					Are you sure you want to delete this document? Once deleted, the document cannot be
-					restored.
-				</p>
+	<div class="border h-14" slot="other">
+		<form
+			method="POST"
+			use:enhance={() => {
+				return async ({ result, update }) => {
+					await update();
+					if (result.type === 'success') {
+						addNotification({
+							text: `Document ${result.data?.message}!`,
+							position: 'bottom-center',
+							type: 'success',
+							removeAfter: 2000
+						});
+					} else {
+						addNotification({
+							text: 'Error performing action.',
+							position: 'bottom-center',
+							type: 'error',
+							removeAfter: 2000
+						});
+					}
+				};
+			}}
+		>
+			<input type="hidden" name="id" value={document.id} />
+			<div class="h-14 flex justify-center items-center space-x-8">
+				<button type="submit" formaction="?/download" class="hover:text-red-700">
+					<ion-icon name="download-outline" size="large" />
+				</button>
+				<button type="submit" formaction="?/delete" class="hover:text-red-700">
+					<ion-icon name="trash-outline" size="large" />
+				</button>
 			</div>
-			<div slot="actions" class="flex w-full items-center justify-center space-x-2">
-				<label for={document.id} class="btn btn-outline">Cancel</label>
-				<form action="?/deleteDocument" method="POST" use:enhance={submitDeleteDocument}>
-					<input type="hidden" name="id" value={document.id} />
-					<button type="submit" class="btn btn-error" disabled={loading}>Delete</button>
-				</form>
-			</div>
-		</Modal>
+		</form>
 	</div>
-</div> -->
+</DocCard>

@@ -26,7 +26,7 @@ export const load = async ({ locals }) => {
 };
 
 export const actions = {
-	deleteDocument: async ({ request, locals }) => {
+	delete: async ({ request, locals }) => {
 		const data = await request.formData();
 		const id = data.get('id') as string;
 
@@ -37,7 +37,8 @@ export const actions = {
 			throw error(err.status, err.message);
 		}
 		return {
-			success: true
+			success: true,
+			message: 'deleted'
 		};
 	},
 
@@ -82,6 +83,7 @@ export const actions = {
 
 	create: async ({ locals }) => {
 		let response;
+		console.log('adding document');
 
 		try {
 			response = await insertDocument({ createdBy: (await locals.getSession())?.user?.id });
@@ -91,5 +93,21 @@ export const actions = {
 		}
 
 		throw redirect(303, `/documents/${response._id}`);
+	},
+
+	download: async ({ request, locals }) => {
+		const data = await request.formData();
+		const id = data.get('id') as string;
+
+		try {
+			console.log('downloading document...');
+		} catch (err: any) {
+			console.log('Error: ', err);
+			throw error(err.status, err.message);
+		}
+		return {
+			success: true,
+			message: 'downloaded'
+		};
 	}
 };

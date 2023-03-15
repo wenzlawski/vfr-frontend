@@ -53,6 +53,8 @@ export async function getDocumentsNoContent(owner: ObjectId, limit = 10, skip = 
 
 export async function updateDocument(id: ObjectId | string, data) {
 	await dbConnect();
+	console.log('updating with data: ', data);
+
 	const doc = await TextDocument.findByIdAndUpdate(id, data, { new: true });
 	return doc;
 }

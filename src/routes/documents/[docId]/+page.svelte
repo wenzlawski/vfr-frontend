@@ -9,6 +9,11 @@
 
 	console.log('data', data);
 
+	function handleResize(event) {
+		console.log('event', event);
+		updateFn({ tabSize: event.detail[1].size });
+	}
+
 	const update = (docData) => {
 		clearTimeout(timer);
 		timer = setTimeout(() => {
@@ -24,29 +29,32 @@
 			body: JSON.stringify(docdata)
 		});
 	}
+
+	function refocusOnEditor() {
+		console.log('refocusOnEditor');
+	}
 </script>
 
-<svelte:head>
-	<script src="//cdn.jsdelivr.net/npm/pouchdb@7.2.1/dist/pouchdb.min.js"></script>
-</svelte:head>
-
-<TitleInput content={data.document._doc.title} {update} />
-<Splitpanes theme="modern-theme" horizontal={false}>
+<Splitpanes theme="modern-theme" horizontal={false} on:resized={handleResize}>
 	<Pane minSize={20}>
-		<form
-			method="POST"
-			action="?/updateDocument"
-			class="space-y-2 w-full h-full items-center"
-			enctype="multipart/form-data"
-			use:enhance
-		>
+		<div class="ml-14 mr-10 mt-8 mb-[10%] h-full">
+			<TitleInput content={data.document._doc.title} {update} {refocusOnEditor} />
 			<Tiptap value={data.document._doc.content} {update} />
-		</form>
+		</div>
 	</Pane>
-	<Pane snapSize={10} size={0} />
+	<Pane snapSize={10} size={data.document._doc.tabSize || 0} />
 </Splitpanes>
 
 <style global lang="scss">
+	/* Placeholder (at the top) */
+	.ProseMirror p.is-editor-empty:first-child::before {
+		content: attr(data-placeholder);
+		float: left;
+		color: #adb5bd;
+		pointer-events: none;
+		height: 0;
+	}
+
 	.splitpanes.modern-theme {
 		.splitpanes__splitter {
 			background-color: #ccc;

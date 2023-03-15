@@ -82,6 +82,7 @@
     "object-to-formdata": "^4.4.2",
     "svelte-disable-preload": "^0.0.1",
     "svelte-french-toast": "^1.0.3",
+    "svelte-notifications": "^0.9.98",
     "svelte-preprocess": "^5.0.1",
     "svelte-splitpanes": "^0.7.12",
     "svelte-tiptap": "^0.7.0",
