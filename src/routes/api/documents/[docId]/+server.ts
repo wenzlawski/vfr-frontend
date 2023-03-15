@@ -1,7 +1,7 @@
 import { updateDocument } from '$lib/db/document';
 import { error, json } from '@sveltejs/kit';
 
-export async function POST({ url, request, params }) {
+export async function POST({ request, params }) {
 	const j = await request.json();
 
 	try {

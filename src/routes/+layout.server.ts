@@ -1,6 +1,7 @@
-export async function load({ locals, route }) {
+export async function load({ locals, route, cookies }) {
 	return {
 		session: await locals.getSession(),
-		route
+		route,
+		theme: cookies.get('theme') || 'light'
 	};
 }

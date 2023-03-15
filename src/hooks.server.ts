@@ -20,6 +20,27 @@ import {
 
 // src/hooks.server.ts
 
+async function theming({ event, resolve }) {
+	const theme = event.cookies.get('theme') || null;
+
+	// if (newTheme) {
+	// 	theme = newTheme;
+	// } else if (cookieTheme) {
+	// 	theme = cookieTheme;
+	// }
+
+	if (theme) {
+		return await resolve(event, {
+			transformPageChunk: ({ html }) => html.replace('data-theme=""', `data-theme="${theme}"`)
+		});
+	}
+
+	const result = await resolve(event, {
+		transformPageChunk: ({ html }) => html
+	});
+	return result;
+}
+
 async function authorization({ event, resolve }) {
 	// Protect any routes under /authenticated
 	const session = await event.locals.getSession();
@@ -41,10 +62,9 @@ async function authorization({ event, resolve }) {
 	}
 
 	// If the request is still here, just proceed as normally
-	const result = await resolve(event, {
+	return await resolve(event, {
 		transformPageChunk: ({ html }) => html
 	});
-	return result;
 }
 
 export const handle: Handle = sequence(
@@ -85,5 +105,6 @@ export const handle: Handle = sequence(
 		},
 		secret: NEXTAUTH_SECRET
 	}),
-	authorization
+	authorization,
+	theming
 );
