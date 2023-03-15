@@ -4,8 +4,7 @@ import { error } from '@sveltejs/kit';
 
 export const load = ({ locals, params }) => {
 	const getDocument = async (docId) => {
-		const userId = await locals.getSession()?.user?.id;
-		console.log('locals', locals);
+		const userId = (await locals.getSession())?.user?.id;
 		try {
 			const document = serializeNonPOJOs(await getDocumentById(docId, userId));
 			return document;
@@ -16,6 +15,7 @@ export const load = ({ locals, params }) => {
 	};
 
 	return {
-		document: getDocument(params.docId)
+		document: getDocument(params.docId),
+		id: params.docId
 	};
 };

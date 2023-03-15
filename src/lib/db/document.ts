@@ -51,10 +51,16 @@ export async function getDocumentsNoContent(owner: ObjectId, limit = 10, skip = 
 	});
 }
 
+export async function updateDocument(id: ObjectId | string, data) {
+	await dbConnect();
+	const doc = await TextDocument.findByIdAndUpdate(id, data, { new: true });
+	return doc;
+}
+
 export async function getDocumentById(id: ObjectId, owner: ObjectId) {
 	await dbConnect();
 	const doc = await TextDocument.findById(id);
-	if (doc?.createdBy === owner) {
+	if (doc?.createdBy.toString() === owner) {
 		return doc;
 	} else {
 		return error(404, 'Invalid access');

@@ -9,4 +9,18 @@ import SidePane from './SidePane.svelte';
 import TextArea from './TextArea.svelte';
 import ContentArea from './ContentArea.svelte';
 import FormTextInput from './FormTextInput.svelte';
-export { FormTextInput, DocumentItem, Navbar, ContentArea, Input, PreviewItemNew, Footer, TextArea, Modal, PreviewItem, SidePane };
+import TitleInput from './TitleInput.svelte';
+export {
+	TitleInput,
+	FormTextInput,
+	DocumentItem,
+	Navbar,
+	ContentArea,
+	Input,
+	PreviewItemNew,
+	Footer,
+	TextArea,
+	Modal,
+	PreviewItem,
+	SidePane
+};

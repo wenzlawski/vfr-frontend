@@ -70,6 +70,7 @@
     "@tiptap/extension-collaboration": "2.0.0-beta.220",
     "@tiptap/extension-collaboration-cursor": "2.0.0-beta.220",
     "@tiptap/extension-placeholder": "2.0.0-beta.220",
+    "@tiptap/pm": "2.0.0-beta.220",
     "@tiptap/starter-kit": "2.0.0-beta.220",
     "@vercel/analytics": "^0.1.11",
     "bcrypt": "^5.1.0",

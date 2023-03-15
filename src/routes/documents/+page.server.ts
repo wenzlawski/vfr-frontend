@@ -9,7 +9,6 @@ export const load = async ({ locals }) => {
 			const documents = serializeNonPOJOs(
 				await getDocumentsNoContent((await locals.getSession())?.user?.id)
 			);
-			console.log('documents', documents);
 			return documents;
 		} catch (err: any) {
 			console.log('Error: ', err);
@@ -29,7 +28,7 @@ export const load = async ({ locals }) => {
 export const actions = {
 	deleteDocument: async ({ request, locals }) => {
 		const data = await request.formData();
-		const id = data.get('id');
+		const id = data.get('id') as string;
 
 		try {
 			await deleteDocument(id);
@@ -90,8 +89,6 @@ export const actions = {
 			console.log('Error: ', err);
 			throw error(err.status, err.message);
 		}
-
-		console.log('response', response);
 
 		throw redirect(303, `/documents/${response._id}`);
 	}
