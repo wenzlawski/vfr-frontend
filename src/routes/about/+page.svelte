@@ -1,5 +1,5 @@
 <script>
-	import { enhance } from '$app/forms';
+	// import { enhance } from '$app/forms';
 </script>
 
 <svelte:head>
@@ -22,7 +22,7 @@
 		Because of that, we don't need to load any JavaScript. Try viewing the page's source, or opening
 		the devtools network panel and reloading.
 	</p>
-	<form method="POST" use:enhance>
+	<!-- <form method="POST" use:enhance>
 		<button type="submit" class="button">Test insert</button>
-	</form>
+	</form> -->
 </div>
