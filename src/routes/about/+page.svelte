@@ -25,4 +25,6 @@
 	<!-- <form method="POST" use:enhance>
 		<button type="submit" class="button">Test insert</button>
 	</form> -->
+
+	This is the about page
 </div>
