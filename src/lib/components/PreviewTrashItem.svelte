@@ -45,13 +45,13 @@
 		>
 			<input type="hidden" name="id" value={document.id} />
 			<div class="h-14 flex justify-center items-center gap-x-8">
-				<div class="tooltip" data-tip="Download">
-					<button type="submit" formaction="?/download" class="btn btn-square btn-outline">
-						<ion-icon name="download-outline" size="large" />
+				<div class="tooltip" data-tip="Restore">
+					<button type="submit" formaction="?/restore" class="btn btn-square btn-outline">
+						<ion-icon name="refresh-outline" size="large" />
 					</button>
 				</div>
-				<div class="tooltip" data-tip="Download">
-					<button type="submit" formaction="?/download" class="btn btn-square btn-outline">
+				<div class="tooltip" data-tip="Delete">
+					<button type="submit" formaction="?/delete" class="btn btn-square btn-outline">
 						<ion-icon name="trash-outline" size="large" />
 					</button>
 				</div>

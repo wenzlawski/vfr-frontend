@@ -1,9 +1,20 @@
-// import { insertTest } from '$lib/db/document';
-// import type { Actions } from '@sveltejs/kit';
+import { error } from '@sveltejs/kit';
 
-// export const actions: Actions = {
-// 	default: async () => {
-// 		console.log('default');
-// 		insertTest();
-// 	}
-// };
+export const actions = {
+	waitlist: async () => {
+		// const data = await request.formData();
+		// const id = data.get('id') as string;
+
+		try {
+			// await updateDocument(id, { deleted: true });
+			// add email to waitlist
+		} catch (err: any) {
+			console.log('Error: ', err);
+			throw error(err.status, err.message);
+		}
+		return {
+			success: true,
+			message: 'deleted'
+		};
+	}
+};

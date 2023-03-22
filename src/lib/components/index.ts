@@ -17,7 +17,9 @@ import BubbleMenu from './BubbleMenu.svelte';
 import HelpDropdown from './HelpDropdown.svelte';
 import RadioFeedback from './RadioFeedback.svelte';
 import CardList from './CardList.svelte';
+import Waitlist from './Waitlist.svelte';
 export {
+	Waitlist,
 	PreviewTrashItem,
 	CardList,
 	RadioFeedback,

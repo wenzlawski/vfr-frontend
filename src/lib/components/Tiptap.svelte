@@ -53,7 +53,9 @@
 	});
 </script>
 
-{#if editor}
-	<BubbleMenu {editor} />
-{/if}
-<EditorContent editor={$editor} />
+<div class="overflow-scroll">
+	{#if editor}
+		<BubbleMenu {editor} />
+	{/if}
+	<EditorContent editor={$editor} />
+</div>

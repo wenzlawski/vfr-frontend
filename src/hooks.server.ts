@@ -25,7 +25,7 @@ async function theming({ event, resolve }) {
 	const theme = event.cookies.get('theme') || null;
 	const session = await event.locals.getSession();
 
-	if (theme) {
+	if (theme && session) {
 		if (theme !== session.user.theme) {
 			updateUser(session.user.id, { theme });
 		}

@@ -11,7 +11,7 @@
 	// inject({ mode: dev ? 'development' : 'production' });
 
 	let route;
-	let onFooter = ['/about', '/feedback'];
+	let onFooter = ['/about', '/feedback', '/paper'];
 	let showFooter = true;
 
 	$: route = $page.data.route?.id;
@@ -20,10 +20,8 @@
 
 <Notifications>
 	<Navbar>
-		<main class="h-full max-h-[93.6%] flex m-0 box-border items-stretch">
-			<div class="grow items-stretch">
-				<slot />
-			</div>
+		<main class="m-0 box-border flex-1">
+			<slot />
 		</main>
 		{#if showFooter}
 			<Footer />

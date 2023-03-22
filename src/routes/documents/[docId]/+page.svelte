@@ -58,22 +58,22 @@
 	horizontal={false}
 >
 	<Pane minSize={20}>
-		<div class="relative h-full overflow-y-scroll">
-			<div class="mx-auto px-4 mt-8 md:max-w-2xl xl:max-w-3xl xl:flex justify-center items-center">
-				<TitleInput content={data.document._doc.title} {update} {refocusOnEditor} />
-				<Tiptap bind:this={editor} value={data.document._doc.content} {update} />
-			</div>
-			<div class:hidden={$pane !== 0} class="absolute top-0 right-0 mr-3 -translate-y-7">
-				<div class="flex justify-center items-center h-full">
-					<div class="flex flex-col justify-center items-center">
-						<button
-							class="btn btn-sm"
-							on:click={() => {
-								$pane = 40;
-								handleResized(40);
-							}}>Analyze the text</button
-						>
-					</div>
+		<div
+			class="mx-auto px-4 mt-8 md:max-w-2xl xl:max-w-3xl xl:flex justify-center items-center overflow-scroll"
+		>
+			<TitleInput content={data.document._doc.title} {update} {refocusOnEditor} />
+			<Tiptap bind:this={editor} value={data.document._doc.content} {update} />
+		</div>
+		<div class:hidden={$pane !== 0} class="absolute top-0 right-0 mr-3 -translate-y-7">
+			<div class="flex justify-center items-center h-full">
+				<div class="flex flex-col justify-center items-center">
+					<button
+						class="btn btn-sm"
+						on:click={() => {
+							$pane = 40;
+							handleResized(40);
+						}}>Analyze the text</button
+					>
 				</div>
 			</div>
 		</div></Pane

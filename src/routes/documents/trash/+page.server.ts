@@ -63,6 +63,7 @@ export const actions = {
 			console.log('Error: ', err);
 			throw error(err.status, err.message);
 		}
+
 		return {
 			success: true,
 			message: 'deleted'
