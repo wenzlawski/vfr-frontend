@@ -9,7 +9,8 @@ export const docSch = new Schema({
 	createdAt: { type: Date, default: Date.now },
 	createdBy: { type: ObjectId },
 	lastModified: { type: Date, default: Date.now },
-	tabSize: { type: Number, default: 0 }
+	tabSize: { type: Number, default: 0 },
+	deleted: { type: Boolean, default: false }
 });
 
 export default mongoose.models['TextDocument'] || mongoose.model('TextDocument', docSch);

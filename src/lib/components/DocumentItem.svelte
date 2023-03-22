@@ -40,7 +40,7 @@
 					restored.
 				</p>
 			</div>
-			<div slot="actions" class="flex w-full items-center justify-center space-x-2">
+			<div slot="actions" class="flex w-full items-center justify-center gap-x-2">
 				<label for={document.id} class="btn btn-outline">Cancel</label>
 				<form action="?/deleteDocument" method="POST" use:enhance={submitDeleteDocument}>
 					<input type="hidden" name="id" value={document.id} />

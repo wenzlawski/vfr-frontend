@@ -19,18 +19,16 @@
 </script>
 
 <Notifications>
-	<div class="flex flex-col h-full flex-wrap min-h-screen">
-		<Navbar>
-			<main class="h-full flex-1 flex m-0 box-border items-stretch">
-				<div class="grow items-stretch">
-					<slot />
-				</div>
-			</main>
-			{#if showFooter}
-				<Footer />
-			{:else}
-				<div />
-			{/if}
-		</Navbar>
-	</div>
+	<Navbar>
+		<main class="h-full max-h-[93.6%] flex m-0 box-border items-stretch">
+			<div class="grow items-stretch">
+				<slot />
+			</div>
+		</main>
+		{#if showFooter}
+			<Footer />
+		{:else}
+			<div />
+		{/if}
+	</Navbar>
 </Notifications>

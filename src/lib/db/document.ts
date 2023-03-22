@@ -33,16 +33,25 @@ export async function getDocuments(owner: ObjectId, limit = 10, skip = 0) {
 	});
 }
 
+export async function emptyTrash(owner: ObjectId | string) {
+	await dbConnect();
+	await TextDocument.deleteMany({ createdBy: owner, deleted: true });
+}
+
 export async function getDocumentsPreview(
 	owner: ObjectId | string,
+	deleted = false,
 	limit = 10,
 	skip = 0,
 	length = 400
 ) {
 	await dbConnect();
-	const docs = await TextDocument.find({ createdBy: owner }).skip(skip).limit(limit).sort({
-		lastModified: 'desc'
-	});
+	const docs = await TextDocument.find({ createdBy: owner, deleted: deleted })
+		.skip(skip)
+		.limit(limit)
+		.sort({
+			lastModified: 'desc'
+		});
 
 	return docs.map((doc) => {
 		return {
@@ -80,7 +89,7 @@ export async function updateDocument(id: ObjectId | string, data) {
 	return doc;
 }
 
-export async function getDocumentById(id: ObjectId, owner: ObjectId) {
+export async function getDocumentById(id: ObjectId | string, owner: ObjectId | string) {
 	await dbConnect();
 	const doc = await TextDocument.findById(id);
 	if (doc?.createdBy.toString() === owner) {

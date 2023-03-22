@@ -19,13 +19,14 @@
 		</label>
 	</form>
 
-	<div class="absolute bottom-0 border-t w-4/5 h-14">
-		<div class="flex flex-row h-14 justify-center items-center space-x-4">
+	<div class="absolute bottom-0 flex justify-center items-center border-t w-full py-2">
+		<div class="flex flex-row h-14 justify-center items-center gap-x-4">
 			<Modal label="upload" checked={modalOpen}>
-				<div slot="trigger" class="hover:text-red-700 hover:font-bold">
-					<div class="items-center flex-row flex text-md sm:text-lg">
-						<ion-icon name="add-outline" size="large" />
-						<span>File</span>
+				<div slot="trigger">
+					<div class="tooltip" data-tip="File">
+						<div class="text-md sm:text-lg btn btn-outline btn-square hover:font-bold">
+							<ion-icon name="document-outline" size="large" />
+						</div>
 					</div>
 				</div>
 				<div slot="heading">
@@ -69,10 +70,11 @@
 				</div>
 			</Modal>
 			<Modal bind:this={m2} label="urlt" checked={modalOpen2}>
-				<div slot="trigger" class="hover:text-red-700 hover:font-bold">
-					<div class="flex flex-row items-center text-md sm:text-lg">
-						<ion-icon name="add-outline" size="large" />
-						<span>URL</span>
+				<div slot="trigger">
+					<div class="tooltip" data-tip="File">
+						<div class="text-md sm:text-lg btn btn-outline btn-square hover:font-bold">
+							<ion-icon name="globe-outline" size="large" />
+						</div>
 					</div>
 				</div>
 				<div slot="heading">
@@ -85,7 +87,7 @@
 						action="?/upload_url"
 						use:enhance={({ form, data }) => {
 							console.log('data', data);
-							return async ({ result }) => {
+							return async ({ result, update }) => {
 								if (result.type === 'error') {
 									m2.close();
 									addNotification({
@@ -94,6 +96,8 @@
 										type: 'error',
 										removeAfter: 5000
 									});
+								} else {
+									update();
 								}
 							};
 						}}

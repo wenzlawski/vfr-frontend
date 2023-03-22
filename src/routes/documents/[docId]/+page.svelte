@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
 	import { Analysis, Input, TitleInput } from '$lib/components';
+	import CardList from '$lib/components/CardList.svelte';
 	import Tiptap from '$lib/components/Tiptap.svelte';
 	import { Pane, Splitpanes } from 'svelte-splitpanes';
 	import { writable } from 'svelte/store';
@@ -9,7 +10,17 @@
 	let timer;
 	let editor;
 
+	console.log(data);
+
 	let pane = writable(data.document._doc.tabSize || 0);
+	let cards = writable([]);
+	let hasAnalysis = false; // set to true if analysis is available
+
+	function analyze() {
+		console.log('analyze');
+		hasAnalysis = true;
+		console.log($cards);
+	}
 
 	function handleResized(size) {
 		updateFn({ tabSize: size });
@@ -25,7 +36,6 @@
 	};
 
 	function updateFn(docdata) {
-		console.log('updateFn');
 		fetch(`/api/documents/${data.id}`, {
 			method: 'POST',
 			body: JSON.stringify(docdata)
@@ -42,20 +52,16 @@
 </svelte:head>
 
 <Splitpanes
+	on:resized={(event) => handleResized(event.detail[event.detail.length - 1].size)}
+	on:resize={(event) => ($pane = event.detail[event.detail.length - 1].size)}
 	theme="modern-theme"
 	horizontal={false}
-	on:resized={(event) => handleResized(event.detail[1].size)}
-	on:resize={(event) => ($pane = event.detail[1].size)}
 >
 	<Pane minSize={20}>
-		<div class="relative">
-			<div
-				class="mx-auto px-4 mt-8 mb-[10%] h-full md:max-w-2xl xl:max-w-3xl xl:flex justify-center items-center"
-			>
-				<div>
-					<TitleInput content={data.document._doc.title} {update} {refocusOnEditor} />
-					<Tiptap bind:this={editor} value={data.document._doc.content} {update} />
-				</div>
+		<div class="relative h-full overflow-y-scroll">
+			<div class="mx-auto px-4 mt-8 md:max-w-2xl xl:max-w-3xl xl:flex justify-center items-center">
+				<TitleInput content={data.document._doc.title} {update} {refocusOnEditor} />
+				<Tiptap bind:this={editor} value={data.document._doc.content} {update} />
 			</div>
 			<div class:hidden={$pane !== 0} class="absolute top-0 right-0 mr-3 -translate-y-7">
 				<div class="flex justify-center items-center h-full">
@@ -72,8 +78,13 @@
 			</div>
 		</div></Pane
 	>
+	{#if hasAnalysis}
+		<Pane snapSize={10} size={15}>
+			<CardList {cards} />
+		</Pane>
+	{/if}
 	<Pane snapSize={20} size={$pane}>
-		<Analysis />
+		<Analysis {analyze} />
 	</Pane>
 </Splitpanes>
 

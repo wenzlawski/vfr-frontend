@@ -1,6 +1,6 @@
 import { error, redirect } from '@sveltejs/kit';
 import { serializeNonPOJOs } from '$lib/utils';
-import { deleteDocument, getDocumentsPreview, insertDocument } from '$lib/db/document';
+import { getDocumentsPreview, insertDocument, updateDocument } from '$lib/db/document';
 import { extract } from '@extractus/article-extractor';
 
 export const load = async ({ locals }) => {
@@ -27,7 +27,7 @@ export const actions = {
 		const id = data.get('id') as string;
 
 		try {
-			await deleteDocument(id);
+			await updateDocument(id, { deleted: true });
 		} catch (err: any) {
 			console.log('Error: ', err);
 			throw error(err.status, err.message);
@@ -54,6 +54,7 @@ export const actions = {
 			// console.error(err);
 			throw error(500, 'Unable to extract article from URL');
 		}
+		console.log('article', article);
 
 		const data = {
 			title: article.title,

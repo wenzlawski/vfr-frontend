@@ -47,6 +47,9 @@
 		<li>
 			<a href="/documents" class="justify-between">My Documents</a>
 		</li>
+		<li>
+			<a href="/documents/trash" class="justify-between">Trash</a>
+		</li>
 		<li><a href="/settings">Settings</a></li>
 		<li><a href="/feedback">Feedback</a></li>
 		<li>

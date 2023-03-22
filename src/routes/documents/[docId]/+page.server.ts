@@ -13,7 +13,6 @@ export const load = ({ locals, params }) => {
 			throw error(err.status, err.message);
 		}
 	};
-
 	return {
 		document: getDocument(params.docId),
 		id: params.docId

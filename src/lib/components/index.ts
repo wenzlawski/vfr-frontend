@@ -1,5 +1,6 @@
 import DocumentItem from './DocumentItem.svelte';
 import PreviewItem from './PreviewItem.svelte';
+import PreviewTrashItem from './PreviewTrashItem.svelte';
 import PreviewItemNew from './PreviewItemNew.svelte';
 import Input from './Input.svelte';
 import Navbar from './Navbar.svelte';
@@ -15,7 +16,10 @@ import Analysis from './Analysis.svelte';
 import BubbleMenu from './BubbleMenu.svelte';
 import HelpDropdown from './HelpDropdown.svelte';
 import RadioFeedback from './RadioFeedback.svelte';
+import CardList from './CardList.svelte';
 export {
+	PreviewTrashItem,
+	CardList,
 	RadioFeedback,
 	HelpDropdown,
 	BubbleMenu,
