@@ -37,6 +37,10 @@
 	}
 </script>
 
+<svelte:head>
+	<title>{data.document._doc.title} - Readanalytics</title>
+</svelte:head>
+
 <Splitpanes
 	theme="modern-theme"
 	horizontal={false}

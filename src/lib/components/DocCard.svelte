@@ -1,7 +1,7 @@
 <div
-	class="card card-compact card-boreder rounded-none w-52 h-64 shadow-md border-solid border-2 hover:border-primary z-40 overflow-hidden"
+	class="card card-compact card-boreder rounded-none w-40 h-52 md:w-52 md:h-64 shadow-md border-solid border-2 hover:border-primary overflow-hidden"
 >
-	<div class="card-body relative" style="padding-bottom: 0">
+	<div class="flex flex-col items-center justify-start m-2 sm:m-3">
 		<slot />
 		<!-- <slot name="body" />
 		<slot name="other" /> -->

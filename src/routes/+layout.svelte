@@ -19,20 +19,18 @@
 </script>
 
 <Notifications>
-	<div class="flex flex-col h-full flex-wrap min-h-screen w-full">
-		<header class="sticky shadow-sm top-0 bg-base-100 z-50">
-			<Navbar />
-		</header>
-		<main class="h-full min-h-full flex-1 flex m-0 box-border items-stretch z-30">
-			<div class="grow items-stretch">
-				<slot />
-			</div>
-		</main>
-
-		{#if showFooter}
-			<Footer />
-		{:else}
-			<div />
-		{/if}
+	<div class="flex flex-col h-full flex-wrap min-h-screen">
+		<Navbar>
+			<main class="h-full flex-1 flex m-0 box-border items-stretch">
+				<div class="grow items-stretch">
+					<slot />
+				</div>
+			</main>
+			{#if showFooter}
+				<Footer />
+			{:else}
+				<div />
+			{/if}
+		</Navbar>
 	</div>
 </Notifications>

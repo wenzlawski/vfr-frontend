@@ -16,6 +16,10 @@
 	let success;
 </script>
 
+<svelte:head>
+	<title>Reset Password - Readanalytics</title>
+</svelte:head>
+
 <div class="flex flex-col mt-32 items-center h-full w-full">
 	<h2 class="mt-2 text-center text-3xl font-bold tracking-tight text-base-content">
 		Reset Your Password

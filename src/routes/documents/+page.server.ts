@@ -50,14 +50,9 @@ export const actions = {
 
 		try {
 			article = await extract(url);
-			console.log(article);
 		} catch (err) {
-			console.error(err);
-		}
-		console.log('article', article);
-
-		if (!article) {
-			return error(300, 'Unable to extract article from URL');
+			// console.error(err);
+			throw error(500, 'Unable to extract article from URL');
 		}
 
 		const data = {
@@ -84,7 +79,7 @@ export const actions = {
 		try {
 			response = await insertDocument({ createdBy: (await locals.getSession())?.user?.id });
 		} catch (err: any) {
-			console.log('Error: ', err);
+			console.log('error: ', err);
 			throw error(err.status, err.message);
 		}
 

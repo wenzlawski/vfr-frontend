@@ -1,5 +1,5 @@
 <div class="dropdown">
-	<label tabindex="-1" class="btn btn-circle btn-ghost btn-xs  text-gray-800">
+	<label tabindex="-1" class="btn btn-circle btn-ghost btn-xs">
 		<svg
 			xmlns="http://www.w3.org/2000/svg"
 			fill="none"

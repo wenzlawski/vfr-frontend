@@ -24,7 +24,6 @@ import { updateUser } from '$lib/db/user';
 async function theming({ event, resolve }) {
 	const theme = event.cookies.get('theme') || null;
 	const session = await event.locals.getSession();
-	console.log('session', session);
 
 	if (theme) {
 		if (theme !== session.user.theme) {

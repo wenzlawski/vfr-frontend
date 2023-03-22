@@ -1,6 +1,7 @@
 <script lang="ts">
 	import HelpDropdown from './HelpDropdown.svelte';
 
+	let model = 'span';
 	let scope = 'sentence';
 	let threshold = 0.5;
 	let context = 1;
@@ -8,6 +9,18 @@
 
 <div class="h-full">
 	<div class="m-5 mt-0 pt-5 space-y-2">
+		<label class="label">
+			<div>
+				Modely type
+				<HelpDropdown>
+					<p class="">The type of model used. Learn more <a href="/paper">here</a></p>
+				</HelpDropdown>
+			</div>
+			<select class="select select-bordered" bind:value={model}>
+				<option value="span" selected>Span-based</option>
+				<option value="graph">Graph-based</option>
+			</select>
+		</label>
 		<label class="label">
 			<div>
 				Analysis scope
@@ -79,7 +92,7 @@
 
 <style>
 	.disabled_area {
-		@apply bg-gray-200;
-		@apply rounded-md;
+		@apply bg-base-300;
+		@apply rounded-lg;
 	}
 </style>

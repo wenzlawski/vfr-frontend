@@ -1,5 +1,5 @@
 <!-- component -->
-<div class="sm:max-w-lg w-full p-10 bg-white rounded-xl z-10 shadow-lg">
+<div class="sm:max-w-lg w-full p-10 bg-white rounded-xl shadow-lg">
 	<div class="text-center">
 		<h2 class="mt-5 text-3xl font-bold text-gray-900">File Upload!</h2>
 		<p class="mt-2 text-sm text-gray-400">Lorem ipsum is placeholder text.</p>

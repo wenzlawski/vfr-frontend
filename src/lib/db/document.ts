@@ -37,7 +37,7 @@ export async function getDocumentsPreview(
 	owner: ObjectId | string,
 	limit = 10,
 	skip = 0,
-	length = 200
+	length = 400
 ) {
 	await dbConnect();
 	const docs = await TextDocument.find({ createdBy: owner }).skip(skip).limit(limit).sort({

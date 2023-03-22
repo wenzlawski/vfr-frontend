@@ -3,8 +3,7 @@
 </script>
 
 <svelte:head>
-	<title>About</title>
-	<meta name="description" content="About this app" />
+	<title>About - Readanalytics</title>
 </svelte:head>
 
 <div class="text-column">

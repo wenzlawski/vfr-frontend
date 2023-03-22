@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
-<svg width="100%" height="100%" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;">
-    <g>
-        <circle cx="512" cy="512" r="512" style="fill:rgb(95,28,192);"/>
-        <g transform="matrix(1.26818,0,0,1.26818,-99.0994,257.864)">
-            <g transform="matrix(576,0,0,576,584.974,380.682)">
-            </g>
-            <text x="356.878px" y="380.682px" style="font-family:'Teko-Regular', 'Teko';font-size:576px;fill:rgb(211,199,255);">R</text>
+<svg width="100%" height="100%" viewBox="0 0 512 512" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;">
+    <g transform="matrix(1.00236,0,0,1.00236,0.471203,-0.804821)">
+        <circle cx="254.927" cy="256.2" r="255.397" style="fill:#5e1dc0;"/>
+    </g>
+    <g transform="matrix(1,0,0,1,14.1808,21.3518)">
+        <g transform="matrix(477.615,0,0,477.615,72.9824,405.591)">
+            <path d="M0.226,-0.391L0.226,-0.592L0.398,-0.592C0.434,-0.592 0.461,-0.584 0.479,-0.569C0.497,-0.553 0.506,-0.528 0.506,-0.493C0.506,-0.457 0.497,-0.431 0.479,-0.415C0.461,-0.399 0.434,-0.391 0.398,-0.391L0.226,-0.391ZM0.069,-0.714L0.069,-0L0.226,-0L0.226,-0.279L0.383,-0.279C0.422,-0.279 0.451,-0.27 0.468,-0.253C0.485,-0.236 0.497,-0.208 0.502,-0.171C0.506,-0.142 0.509,-0.112 0.511,-0.081C0.513,-0.05 0.518,-0.023 0.527,-0L0.684,-0C0.677,-0.01 0.671,-0.022 0.668,-0.037C0.664,-0.051 0.661,-0.066 0.66,-0.082C0.658,-0.098 0.657,-0.114 0.656,-0.129C0.655,-0.144 0.655,-0.158 0.654,-0.169C0.653,-0.187 0.65,-0.205 0.647,-0.223C0.643,-0.241 0.637,-0.258 0.629,-0.273C0.621,-0.288 0.611,-0.301 0.598,-0.312C0.585,-0.323 0.569,-0.331 0.55,-0.336L0.55,-0.338C0.59,-0.354 0.619,-0.377 0.637,-0.408C0.654,-0.439 0.663,-0.475 0.663,-0.517C0.663,-0.544 0.658,-0.57 0.649,-0.594C0.639,-0.617 0.625,-0.638 0.607,-0.656C0.588,-0.674 0.566,-0.688 0.541,-0.699C0.515,-0.709 0.486,-0.714 0.454,-0.714L0.069,-0.714Z" style="fill:#fff;fill-rule:nonzero;"/>
         </g>
     </g>
 </svg>

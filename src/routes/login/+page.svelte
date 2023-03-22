@@ -12,6 +12,10 @@
 	});
 </script>
 
+<svelte:head>
+	<title>Login - Readanalytics</title>
+</svelte:head>
+
 <div class="flex flex-col mt-32 items-center h-full w-full px-2 py-3 max-w-lg mx-auto">
 	<!-- <form
 		use:form
