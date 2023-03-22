@@ -58,9 +58,7 @@
 	horizontal={false}
 >
 	<Pane minSize={20}>
-		<div
-			class="mx-auto px-4 mt-8 md:max-w-2xl xl:max-w-3xl xl:flex justify-center items-center overflow-scroll"
-		>
+		<div class="mx-auto px-4 mt-8 md:max-w-2xl xl:max-w-3xl justify-center ">
 			<TitleInput content={data.document._doc.title} {update} {refocusOnEditor} />
 			<Tiptap bind:this={editor} value={data.document._doc.content} {update} />
 		</div>
@@ -83,7 +81,7 @@
 			<CardList {cards} />
 		</Pane>
 	{/if}
-	<Pane snapSize={20} size={$pane}>
+	<Pane snapSize={10} size={$pane}>
 		<Analysis {analyze} />
 	</Pane>
 </Splitpanes>
