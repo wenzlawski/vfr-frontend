@@ -8,83 +8,110 @@
 </script>
 
 <div class="h-full">
-	<div class="m-5 mt-0 pt-5 space-y-2">
-		<label class="label">
-			<div>
-				Modely type
-				<HelpDropdown>
-					<p class="">The type of model used. Learn more <a href="/paper">here</a></p>
-				</HelpDropdown>
-			</div>
-			<select class="select select-bordered" bind:value={model}>
-				<option value="span" selected>Span-based</option>
-				<option value="graph">Graph-based</option>
-			</select>
-		</label>
-		<label class="label">
-			<div>
-				Analysis scope
-				<HelpDropdown>
-					<p class="">This is the analysis scope</p>
-				</HelpDropdown>
-			</div>
-			<select class="select select-bordered" bind:value={scope}>
-				<option value="sentence" selected>Sentence-level</option>
-				<option value="paragraph">Paragraph-level</option>
-				<option value="document">Document-level</option>
-			</select>
-		</label>
-		<div class="form-control w-full">
-			<label class="label" for="th">
-				<div>
-					Argument threshold
-					<HelpDropdown>
-						<h2 class="">This is the argument threshold</h2>
-					</HelpDropdown>
-				</div>
-				<b>{Math.round(threshold * 100)}%</b>
-			</label>
-			<input
-				name="th"
-				bind:value={threshold}
-				type="range"
-				min="0"
-				max="1"
-				step="0.05"
-				class="range"
-			/>
+	<div class="mt-3 space-y-0">
+		<div class="flex flex-row space-x-2 mx-2">
+			<button class="btn text-sm"> Zap </button>
+			<button class="btn "> Multi-add </button>
+			<!-- <button class="btn "> Analyze </button> -->
 		</div>
-		<div class:disabled_area={scope === 'sentence'}>
-			<div class="mb-2">
-				<label class="label" for="ct">
+		<div class="divider" />
+		<div class="collapse collapse-plus">
+			<input type="checkbox" />
+			<div class="collapse-title text-lg">Visual options</div>
+			<div class="collapse-content">
+				<label class="label">
+					Show claims
+					<input type="checkbox" class="checkbox" id="show-claim" />
+				</label>
+				<label class="label">
+					Show premises
+					<input type="checkbox" class="checkbox" id="show-premise" />
+				</label>
+			</div>
+		</div>
+		<div class="divider" />
+		<div class="collapse collapse-plus">
+			<input type="checkbox" />
+			<div class="collapse-title text-lg">Model options</div>
+			<div class="collapse-content space-y-2">
+				<label class="label">
 					<div>
-						Context size
+						Model type
 						<HelpDropdown>
-							<h2 class="">This is the context size</h2>
+							<p class="">The type of model used. Learn more <a href="/paper">here</a></p>
 						</HelpDropdown>
 					</div>
-					<div>
-						<input
-							class="text-xl text-right"
-							name="ct"
-							bind:value={context}
-							type="number"
-							min="1"
-							max="20"
-							disabled={scope === 'sentence'}
-						/>
-						<span>words</span>
-					</div>
+					<select class="select select-bordered" bind:value={model}>
+						<option value="span" selected>Span-based</option>
+						<option value="graph">Graph-based</option>
+					</select>
 				</label>
-				{#if scope === 'sentence'}
-					<p class="text-sm p-2 pt-0 text-gray-500">
-						Can only be set in paragraph and document scope.
-					</p>
-				{/if}
+				<label class="label">
+					<div>
+						Analysis scope
+						<HelpDropdown>
+							<p class="">This is the analysis scope</p>
+						</HelpDropdown>
+					</div>
+					<select class="select select-bordered" bind:value={scope}>
+						<option value="sentence" selected>Sentence-level</option>
+						<option value="paragraph">Paragraph-level</option>
+						<option value="document">Document-level</option>
+					</select>
+				</label>
+				<div class="form-control w-full">
+					<label class="label" for="th">
+						<div>
+							Argument threshold
+							<HelpDropdown>
+								<h2 class="">This is the argument threshold</h2>
+							</HelpDropdown>
+						</div>
+						<b>{Math.round(threshold * 100)}%</b>
+					</label>
+					<input
+						name="th"
+						bind:value={threshold}
+						type="range"
+						min="0"
+						max="1"
+						step="0.05"
+						class="range"
+					/>
+				</div>
+				<div class:disabled_area={scope === 'sentence'}>
+					<div class="mb-2">
+						<label class="label" for="ct">
+							<div>
+								Context size
+								<HelpDropdown>
+									<h2 class="">This is the context size</h2>
+								</HelpDropdown>
+							</div>
+							<div>
+								<input
+									class="text-xl text-right"
+									name="ct"
+									bind:value={context}
+									type="number"
+									min="1"
+									max="20"
+									disabled={scope === 'sentence'}
+								/>
+								<span>words</span>
+							</div>
+						</label>
+						{#if scope === 'sentence'}
+							<p class="text-sm p-2 pt-0 text-gray-500">
+								Can only be set in paragraph and document scope.
+							</p>
+						{/if}
+					</div>
+				</div>
+				<!-- class="range" -->
+				<button class="btn w-full"> Analyze </button>
 			</div>
 		</div>
-		<!-- class="range" -->
-		<button class="btn w-full"> Analyze </button>
 		<div class="divider" />
 		<span class="text-xl text-gray-500">This is the analysis result.</span>
 	</div>

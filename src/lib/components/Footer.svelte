@@ -2,7 +2,7 @@
 	import logo from '$lib/images/logo.svg';
 </script>
 
-<footer class="footer items-center p-4">
+<footer class="footer items-center p-4 mt-32 md:mt-16">
 	<div class="items-center grid-flow-col">
 		<img src={logo} alt="Home" class="w-10 ml-1 font-bold" />
 		<p>Copyright © 2023 - All right reserved</p>

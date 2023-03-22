@@ -11,7 +11,7 @@
 	// inject({ mode: dev ? 'development' : 'production' });
 
 	let route;
-	let onFooter = ['/about'];
+	let onFooter = ['/about', '/feedback'];
 	let showFooter = true;
 
 	$: route = $page.data.route?.id;

@@ -48,7 +48,8 @@ async function authorization({ event, resolve }) {
 	if (
 		event.url.pathname.startsWith('/settings') ||
 		event.url.pathname.startsWith('/documents') ||
-		event.url.pathname.startsWith('/api')
+		event.url.pathname.startsWith('/api') ||
+		event.url.pathname.startsWith('/feedback')
 	) {
 		if (!session) {
 			throw redirect(303, '/auth');

@@ -14,7 +14,9 @@ import DocCard from './DocCard.svelte';
 import Analysis from './Analysis.svelte';
 import BubbleMenu from './BubbleMenu.svelte';
 import HelpDropdown from './HelpDropdown.svelte';
+import RadioFeedback from './RadioFeedback.svelte';
 export {
+	RadioFeedback,
 	HelpDropdown,
 	BubbleMenu,
 	Analysis,

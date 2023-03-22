@@ -1,0 +1,36 @@
+<script lang="ts">
+	import { BubbleMenu } from 'svelte-tiptap';
+
+	export let editor;
+
+	function handleAdd() {
+		console.log('add');
+	}
+</script>
+
+<BubbleMenu editor={$editor}>
+	<div data-test-id="bubble-menu" class="card bg-base-300 rounded-xl border border-gray-400 ">
+		<div class="m-2 flex justify-center">
+			<div class="tooltip m-0 cursor-pointer" data-tip="Add">
+				<button on:click={handleAdd}>
+					<ion-icon name="add-outline" size="large" />
+				</button>
+			</div>
+		</div>
+	</div>
+</BubbleMenu>
+
+<!-- <style lang="scss">
+	.square::before {
+		content: '';
+		position: absolute;
+		bottom: -10px;
+		left: 50%;
+		transform: translateX(-50%);
+		width: 0;
+		height: 0;
+		border-left: 20px solid transparent;
+		border-right: 20px solid transparent;
+		border-top: 10px solid grey;
+	}
+</style> -->

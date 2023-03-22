@@ -1,28 +1,29 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import StarterKit from '@tiptap/starter-kit';
-	import { createEditor, EditorContent } from 'svelte-tiptap';
+	import { createEditor, Editor, EditorContent } from 'svelte-tiptap';
 	import Placeholder from '@tiptap/extension-placeholder';
-	// import { LanguageTool, Match } from '$lib/languagetool';
-
-	// const match = ref<Match>(null);
-
-	// const updateMatch = computed(() => match.value?.replacements || []);
-	// const replacements = computed(() => match.value?.replacements || []);
-	// const matchMessage = computed(() => match.value?.message || 'No Message');
-	// const updateHtml = () => navigator.clipboard.writeText(editor.value.getHTML());
-	// const acceptSuggestion = (sug) => {
-	// 	editor.value.commands.insertContent(sug.value);
-	// };
-	// const proofread = () => editor.value.commands.proofread();
+	import BubbleMenu from './tiptap/BubbleMenu.svelte';
+	import type { Readable } from 'svelte/store';
 
 	export let value = '';
 	export let update = (_) => {};
-	let editor;
+	let editor: Readable<Editor>;
+	let timer;
 
 	export function focus() {
 		$editor.commands.focus();
 	}
+
+	const toolTip = (selection) => {
+		clearTimeout(timer);
+		timer = setTimeout(() => {
+			// console.log('start,', sel.$anchor.pos, 'end,', sel.$head.pos);
+			const { from, to } = selection;
+			const text = $editor.state.doc.textBetween(from, to, ' ');
+			console.log(text);
+		}, 1000);
+	};
 
 	onMount(() => {
 		editor = createEditor({
@@ -31,11 +32,6 @@
 				Placeholder.configure({
 					placeholder: 'Start typing...'
 				})
-				// LanguageTool.configure({
-				// 	language: 'auto',
-				// 	apiUrl: 'https://languagetool.org/api/v2',
-				// 	automaticMode: true
-				// })
 			],
 			editorProps: {
 				attributes: {
@@ -45,13 +41,19 @@
 			content: value,
 			onUpdate({ editor }) {
 				update({ content: editor.getText() });
-				// setTimeout(() => updateMatch(editor));
 			},
-			onSelectionUpdate({ editor }) {
-				// setTimeout(() => updateMatch(editor));
+			onSelectionUpdate({ editor, transaction }) {
+				if (transaction.selection.$anchor.pos !== transaction.selection.$head.pos) {
+					toolTip(transaction.selection);
+				} else {
+					clearTimeout(timer);
+				}
 			}
 		});
 	});
 </script>
 
+{#if editor}
+	<BubbleMenu {editor} />
+{/if}
 <EditorContent editor={$editor} />

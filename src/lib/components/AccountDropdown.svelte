@@ -48,6 +48,7 @@
 			<a href="/documents" class="justify-between">My Documents</a>
 		</li>
 		<li><a href="/settings">Settings</a></li>
+		<li><a href="/feedback">Feedback</a></li>
 		<li>
 			<form action="/auth/signout" method="POST">
 				<button type="submit" class="w-full text-start">Logout</button>
