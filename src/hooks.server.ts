@@ -52,7 +52,7 @@ async function authorization({ event, resolve }) {
 		event.url.pathname.startsWith('/feedback')
 	) {
 		if (!session) {
-			throw redirect(303, '/auth');
+			throw redirect(303, '/login');
 		}
 	} else if (
 		event.url.pathname.startsWith('/login') ||
