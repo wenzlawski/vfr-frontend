@@ -62,7 +62,7 @@
 			<TitleInput content={data.document._doc.title} {update} {refocusOnEditor} />
 			<Tiptap bind:this={editor} value={data.document._doc.content} {update} />
 		</div>
-		<div class:hidden={$pane !== 0} class="absolute top-0 right-0 mr-3 -translate-y-7">
+		<div class:hidden={$pane !== 0} class="absolute top-[6.5rem] right-0 mr-3 -translate-y-7">
 			<div class="flex justify-center items-center h-full">
 				<div class="flex flex-col justify-center items-center">
 					<button

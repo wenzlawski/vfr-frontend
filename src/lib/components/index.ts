@@ -13,7 +13,6 @@ import FormTextInput from './FormTextInput.svelte';
 import TitleInput from './TitleInput.svelte';
 import DocCard from './DocCard.svelte';
 import Analysis from './Analysis.svelte';
-import BubbleMenu from './BubbleMenu.svelte';
 import HelpDropdown from './HelpDropdown.svelte';
 import RadioFeedback from './RadioFeedback.svelte';
 import CardList from './CardList.svelte';
@@ -24,7 +23,6 @@ export {
 	CardList,
 	RadioFeedback,
 	HelpDropdown,
-	BubbleMenu,
 	Analysis,
 	DocCard,
 	TitleInput,
