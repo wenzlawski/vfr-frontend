@@ -71,7 +71,7 @@
 			</Modal>
 			<Modal bind:this={m2} label="urlt" checked={modalOpen2}>
 				<div slot="trigger">
-					<div class="tooltip" data-tip="File">
+					<div class="tooltip" data-tip="Url">
 						<div class="text-md sm:text-lg btn btn-outline btn-square hover:font-bold">
 							<ion-icon name="globe-outline" size="large" />
 						</div>
