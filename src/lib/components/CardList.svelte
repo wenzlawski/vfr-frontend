@@ -1,10 +1,10 @@
 <script lang="ts">
-	export let cards;
+	export let cards: any;
 </script>
 
-<div class="flex items-center justify-center mt-20">
+<div class="flex justify-center items-center mt-20">
 	<div
-		class="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"
+		class="inline-block w-8 h-8 rounded-full border-4 border-current border-solid animate-spin border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"
 		role="status"
 	>
 		<span
@@ -14,9 +14,9 @@
 	</div>
 </div>
 
-<div class="space-y-2 p-2 h-full overflow-y-scroll">
+<div class="overflow-y-scroll p-2 space-y-2 h-full">
 	{#each $cards as card}
-		<div class="card bg-base-200 border p-2 overflow-x-hidden">
+		<div class="overflow-x-hidden p-2 border card bg-base-200">
 			<div>
 				<h2 class="card-title">Premise</h2>
 				<p class="card-text">{card.premise}</p>

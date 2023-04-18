@@ -1,7 +1,11 @@
 <script lang="ts">
 	import HelpDropdown from './HelpDropdown.svelte';
 
-	export let analyze = () => {};
+	export let analyze = (_model: string, _opts: any) => {};
+
+	function analyzeHandler() {
+		analyze(model, { scope, threshold, context });
+	}
 
 	let model = 'span';
 	let scope = 'sentence';
@@ -11,17 +15,17 @@
 
 <div class="mt-3 space-y-0">
 	<div class="m-3">
-		<h1 class="text-xl mb-2">Annotations</h1>
+		<h1 class="mb-2 text-xl">Annotations</h1>
 		<div class="flex flex-row gap-x-2">
 			<button class="btn btn-sm"> Zap </button>
 			<button class="btn btn-sm">add </button>
-			<!-- <button class="btn "> Analyze </button> -->
+			<!-- <button class="btn"> Analyze </button> -->
 		</div>
 	</div>
 	<div class="divider" />
 	<div class="collapse collapse-plus">
 		<input type="checkbox" />
-		<div class="collapse-title text-lg">Visual options</div>
+		<div class="text-lg collapse-title">Visual options</div>
 		<div class="collapse-content">
 			<label class="label">
 				Show claims
@@ -36,8 +40,8 @@
 	<div class="divider" />
 	<div class="collapse collapse-plus">
 		<input type="checkbox" checked />
-		<div class="collapse-title text-lg">Model options</div>
-		<div class="collapse-content space-y-2">
+		<div class="text-lg collapse-title">Model options</div>
+		<div class="space-y-2 collapse-content">
 			<label class="label">
 				<div>
 					Model type
@@ -46,24 +50,32 @@
 					</HelpDropdown>
 				</div>
 				<select class="select select-bordered" bind:value={model}>
+					<option value="margot" selected>MARGOT API</option>
 					<option value="span" selected>Span-based</option>
 					<option value="graph">Graph-based</option>
 				</select>
 			</label>
-			<label class="label">
-				<div>
-					Analysis scope
-					<HelpDropdown>
-						<p class="">This is the analysis scope</p>
-					</HelpDropdown>
-				</div>
-				<select class="select select-bordered" bind:value={scope}>
-					<option value="sentence" selected>Sentence-level</option>
-					<option value="paragraph">Paragraph-level</option>
-					<option value="document">Document-level</option>
-				</select>
-			</label>
-			<div class="form-control w-full">
+			<div class:disabled_area={model === 'margot'}>
+				<label class="label">
+					<div>
+						Analysis scope
+						<HelpDropdown>
+							<p class="">This is the analysis scope</p>
+						</HelpDropdown>
+					</div>
+					<select class="select select-bordered" bind:value={scope} disabled={model === 'margot'}>
+						<option value="sentence" selected>Sentence-level</option>
+						<option value="paragraph">Paragraph-level</option>
+						<option value="document">Document-level</option>
+					</select>
+				</label>
+				{#if model === 'margot'}
+					<p class="p-2 pt-0 text-sm text-gray-500">
+						Can only be set in Span-based or Graph-based model.
+					</p>
+				{/if}
+			</div>
+			<div class="w-full form-control" class:disabled_area={model === 'margot'}>
 				<label class="label" for="th">
 					<div>
 						Argument threshold
@@ -82,6 +94,11 @@
 					step="0.05"
 					class="range"
 				/>
+				{#if model === 'margot'}
+					<p class="p-2 pt-0 text-sm text-gray-500">
+						Can only be set in Span-based or Graph-based model.
+					</p>
+				{/if}
 			</div>
 			<div class:disabled_area={scope === 'sentence'}>
 				<div class="mb-2">
@@ -89,7 +106,8 @@
 						<div>
 							Context size
 							<HelpDropdown>
-								<h2 class="">This is the context size</h2>
+								<h2>This is the context size.</h2>
+								<p>Keep low in order to improve performance.</p>
 							</HelpDropdown>
 						</div>
 						<div>
@@ -102,23 +120,23 @@
 								max="20"
 								disabled={scope === 'sentence'}
 							/>
-							<span>words</span>
+							<span>sentence(s)</span>
 						</div>
 					</label>
 					{#if scope === 'sentence'}
-						<p class="text-sm p-2 pt-0 text-gray-500">
+						<p class="p-2 pt-0 text-sm text-gray-500">
 							Can only be set in paragraph and document scope.
 						</p>
 					{/if}
 				</div>
 			</div>
 			<!-- class="range" -->
-			<button class="btn w-full" on:click={() => analyze()}> Analyze </button>
+			<button class="w-full btn" on:click={() => analyzeHandler()}> Analyze </button>
 		</div>
 	</div>
 	<div class="divider" />
 	<div class="m-3">
-		<h1 class="text-xl mb-2">Analysis</h1>
+		<h1 class="mb-2 text-xl">Analysis</h1>
 		<div class="space-y-2">
 			<button class="btn btn-sm"> Export </button>
 			<button class="btn btn-sm"> Export all </button>

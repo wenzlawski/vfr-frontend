@@ -1,46 +1,72 @@
 <script lang="ts">
-	import { enhance } from '$app/forms';
-	import { Analysis, Input, TitleInput } from '$lib/components';
+	import { Analysis, TitleInput } from '$lib/components';
 	import CardList from '$lib/components/CardList.svelte';
 	import Tiptap from '$lib/components/Tiptap.svelte';
 	import { Pane, Splitpanes } from 'svelte-splitpanes';
 	import { writable } from 'svelte/store';
+	import { debounce } from '$lib/utils';
+	import type { PageData } from './$types';
+	import { documentStore } from '$lib/stores/document';
 
-	export let data;
-	let timer;
+	export let data: PageData;
 	let editor;
+	let docStore = documentStore;
 
-	console.log(data);
+	data.document.document._doc._id = data.document.id;
 
-	let pane = writable(data.document._doc.tabSize || 0);
+	docStore.init(data.document.document._doc);
+
+	let pane = writable(data.document.document._doc?.tabSize || 0);
 	let cards = writable([]);
 	let hasAnalysis = false; // set to true if analysis is available
 
-	function analyze() {
-		console.log('analyze');
+	function analyze(model: string, opts: any) {
+		switch (model) {
+			case 'margot':
+				console.log("margot's model");
+				fetch('/api/models/margot', {
+					method: 'POST',
+					body: JSON.stringify({ text: data.document.document._doc.content, opts })
+				})
+					.then((res) => {
+						console.log('res', res);
+						return res.json();
+					})
+					.then((data) => {
+						// Consuming the response data
+						console.log('data', data);
+					});
+				break;
+			case 'span':
+				console.log('span');
+				break;
+			case 'graph':
+				console.log('graph');
+				break;
+			default:
+				console.log('default');
+				break;
+		}
 		hasAnalysis = true;
-		console.log($cards);
 	}
 
-	function handleResized(size) {
-		updateFn({ tabSize: size });
+	function handleResized(size: any) {
+		debouncedUpdate({ tabSize: size });
 		$pane = size;
 	}
 
-	const update = (docData) => {
-		clearTimeout(timer);
-		timer = setTimeout(() => {
-			console.log('debounced');
-			updateFn(docData);
-		}, 1000);
+	const update = (docData: any) => {
+		debouncedUpdate(docData);
 	};
 
-	function updateFn(docdata) {
-		fetch(`/api/documents/${data.id}`, {
+	function updateFn(docdata: any) {
+		fetch(`/api/documents/${data.document.id}`, {
 			method: 'POST',
 			body: JSON.stringify(docdata)
 		});
 	}
+
+	const debouncedUpdate = debounce(updateFn, 1000);
 
 	function refocusOnEditor() {
 		editor.focus();
@@ -48,7 +74,11 @@
 </script>
 
 <svelte:head>
-	<title>{data.document._doc.title} - Readanalytics</title>
+	{#await data.document}
+		<title>{'Loading'} - Readanalytics</title>
+	{:then document}
+		<title>{$docStore.title} - Readanalytics</title>
+	{/await}
 </svelte:head>
 
 <Splitpanes
@@ -58,11 +88,25 @@
 	horizontal={false}
 >
 	<Pane minSize={20}>
-		<div class="mx-auto px-4 mt-8 md:max-w-2xl xl:max-w-3xl justify-center ">
-			<TitleInput content={data.document._doc.title} {update} {refocusOnEditor} />
-			<Tiptap bind:this={editor} value={data.document._doc.content} {update} />
+		<div class="justify-center px-4 mx-auto mt-8 md:max-w-2xl xl:max-w-3xl">
+			{#await data.document}
+				<div class="flex justify-center items-center mt-20">
+					<div
+						class="inline-block w-8 h-8 rounded-full border-4 border-current border-solid animate-spin border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"
+						role="status"
+					>
+						<span
+							class="!absolute !-m-px !h-px !w-px !overflow-hidden !whitespace-nowrap !border-0 !p-0 ![clip:rect(0,0,0,0)]"
+							>Loading...</span
+						>
+					</div>
+				</div>
+			{:then document}
+				<TitleInput content={$docStore.title} update={docStore.updateField} {refocusOnEditor} />
+				<Tiptap bind:this={editor} value={$docStore.content} update={docStore.updateField} />
+			{/await}
 		</div>
-		<div class:hidden={$pane !== 0} class="absolute top-[6.5rem] right-0 mr-3 -translate-y-7">
+		<div class:hidden={$pane !== 0} class="absolute right-0 mr-3 -translate-y-7 top-[6.5rem]">
 			<div class="flex justify-center items-center h-full">
 				<div class="flex flex-col justify-center items-center">
 					<button

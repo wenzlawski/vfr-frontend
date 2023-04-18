@@ -4,7 +4,7 @@ import TextDocument from '$lib/models/document';
 import type { ObjectId } from 'mongodb';
 import { error } from '@sveltejs/kit';
 
-export async function insertDocument(data) {
+export async function insertDocument(data: { title?: any; content?: any; createdBy: any }) {
 	await dbConnect();
 	const doc = new TextDocument(data);
 	doc.save();
@@ -80,13 +80,18 @@ export async function getDocumentsNoContent(owner: ObjectId | string, limit = 10
 	});
 }
 
-export async function updateDocument(id: ObjectId | string, data) {
+export async function updateDocument(id: ObjectId | string, data: any, owner: ObjectId | string) {
 	await dbConnect();
 	data.lastModified = new Date();
-	console.log('updating with data: ', data);
 
-	const doc = await TextDocument.findByIdAndUpdate(id, data, { new: true });
-	return doc;
+	const doc = await TextDocument.findById(id);
+
+	if (doc?.createdBy.toString() === owner) {
+		const doc = await TextDocument.findByIdAndUpdate(id, data, { new: true });
+		return doc;
+	} else {
+		return error(404, 'Invalid access');
+	}
 }
 
 export async function getDocumentById(id: ObjectId | string, owner: ObjectId | string) {
