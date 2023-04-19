@@ -14,7 +14,7 @@ class MargotEndpoint extends RemoteEndpoint {
 				'Content-Type': 'application/json',
 				Accept: 'application/json'
 			},
-			body: JSON.stringify({ text: data })
+			body: JSON.stringify({ text: data.replace(/\n/g, ' ') })
 		};
 		const response = await fetch(
 			'https://penelope.vub.be/margot-api/track-arguments',
@@ -24,6 +24,7 @@ class MargotEndpoint extends RemoteEndpoint {
 	}
 
 	protected handleResponse(response: any): any {
+		// parge the response into a Analytics object and return it
 		return response.json();
 	}
 }

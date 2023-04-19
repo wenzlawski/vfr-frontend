@@ -4,6 +4,8 @@ import MargotEndpoint from '$lib/handlers/margot';
 export async function POST({ request }) {
 	const { text, opts } = await request.json();
 
+	console.log('text: ', text);
+
 	const margot = new MargotEndpoint();
 
 	try {

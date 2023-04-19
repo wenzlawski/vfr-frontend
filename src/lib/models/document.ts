@@ -11,6 +11,7 @@ export const docSch = new Schema({
 	lastModified: { type: Date, default: Date.now },
 	tabSize: { type: Number, default: 0 },
 	deleted: { type: Boolean, default: false }
+	// analysis: [{ type: String, default: {} }]
 });
 
 export default mongoose.models['TextDocument'] || mongoose.model('TextDocument', docSch);

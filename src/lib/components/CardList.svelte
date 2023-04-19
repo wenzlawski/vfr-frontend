@@ -1,28 +1,30 @@
 <script lang="ts">
-	export let cards: any;
+	import ArgumentCard from './ArgumentCard.svelte';
+	import { getTextFromRanges } from '$lib/utils';
+
+	export let analysis: any;
+	export let content: string;
 </script>
 
-<div class="flex justify-center items-center mt-20">
-	<div
-		class="inline-block w-8 h-8 rounded-full border-4 border-current border-solid animate-spin border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"
-		role="status"
-	>
-		<span
-			class="!absolute !-m-px !h-px !w-px !overflow-hidden !whitespace-nowrap !border-0 !p-0 ![clip:rect(0,0,0,0)]"
-			>Loading...</span
+{#if !$analysis.hasAnalysis}
+	<div class="flex flex-col justify-center items-center mx-2 mt-20">
+		<div
+			class="inline-block w-8 h-8 rounded-full border-4 border-current border-solid animate-spin border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"
+			role="status"
 		>
-	</div>
-</div>
-
-<div class="overflow-y-scroll p-2 space-y-2 h-full">
-	{#each $cards as card}
-		<div class="overflow-x-hidden p-2 border card bg-base-200">
-			<div>
-				<h2 class="card-title">Premise</h2>
-				<p class="card-text">{card.premise}</p>
-				<h2 class="card-title">Claim</h2>
-				<p class="card-text">{card.claim}</p>
-			</div>
+			<span
+				class="!absolute !-m-px !h-px !w-px !overflow-hidden !whitespace-nowrap !border-0 !p-0 ![clip:rect(0,0,0,0)]"
+				>Loading...</span
+			>
 		</div>
-	{/each}
-</div>
+		<p class="mt-4 text-center">
+			Analyzing.<br />This may take a up to one minute.
+		</p>
+	</div>
+{:else}
+	<div class="overflow-y-scroll p-2 space-y-2 h-full">
+		{#each $analysis.arguments as argument}
+			<ArgumentCard argument={getTextFromRanges(content, argument)} />
+		{/each}
+	</div>
+{/if}

@@ -53,3 +53,46 @@ export function downloadFile(fileContent, fileName, fileType) {
 	window.URL.revokeObjectURL(url);
 	document.body.removeChild(link);
 }
+
+function getSubstringLocations(
+	paragraph: string,
+	objects: { text: string; claim_evidence?: string; claim?: string }[]
+): { text: { start: number; span: number }; evidence: { start: number; span: number } }[] {
+	const results: {
+		text: { start: number; span: number };
+		evidence: { start: number; span: number };
+	}[] = [];
+	for (const obj of objects) {
+		const textStart = paragraph.indexOf(obj.text.replace(/ ([,.'])/g, '$1'));
+		const textSpan = obj.text.length;
+		let evidenceStart;
+		let evidenceSpan;
+		if (obj.claim_evidence !== undefined) {
+			evidenceStart = paragraph.indexOf(obj.claim_evidence.replace(/ ([,.'])/g, '$1'));
+			evidenceSpan = obj.claim_evidence.length;
+		} else if (obj.claim !== undefined) {
+			evidenceStart = paragraph.indexOf(obj.claim.replace(/ ([,.'])/g, '$1'));
+			evidenceSpan = obj.claim.length;
+		}
+		results.push({
+			text: { start: textStart, span: textSpan },
+			evidence: { start: evidenceStart, span: evidenceSpan }
+		});
+	}
+	return results;
+}
+
+export function getTextFromRanges(paragraph: string, argument: any) {
+	console.log('argument: ', argument);
+	return {
+		claim: paragraph.slice(argument.text.start, argument.text.start + argument.text.span),
+		evidence: paragraph.slice(
+			argument.evidence.start,
+			argument.evidence.start + argument.evidence.span
+		)
+	};
+}
+
+export function parseMargot(text: string, content) {
+	return getSubstringLocations(text, content);
+}

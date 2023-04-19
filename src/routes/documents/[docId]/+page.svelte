@@ -4,29 +4,32 @@
 	import Tiptap from '$lib/components/Tiptap.svelte';
 	import { Pane, Splitpanes } from 'svelte-splitpanes';
 	import { writable } from 'svelte/store';
-	import { debounce } from '$lib/utils';
+	import { parseMargot } from '$lib/utils';
 	import type { PageData } from './$types';
 	import { documentStore } from '$lib/stores/document';
+	import { analysisStore } from '$lib/stores/analysis';
 
 	export let data: PageData;
 	let editor;
+
 	let docStore = documentStore;
-
 	data.document.document._doc._id = data.document.id;
-
 	docStore.init(data.document.document._doc);
 
-	let pane = writable(data.document.document._doc?.tabSize || 0);
-	let cards = writable([]);
+	let pane = writable($docStore.tabSize || 0);
+
+	let anaStore = analysisStore;
+
 	let hasAnalysis = false; // set to true if analysis is available
 
 	function analyze(model: string, opts: any) {
+		anaStore.init();
 		switch (model) {
 			case 'margot':
 				console.log("margot's model");
 				fetch('/api/models/margot', {
 					method: 'POST',
-					body: JSON.stringify({ text: data.document.document._doc.content, opts })
+					body: JSON.stringify({ text: $docStore.content, opts })
 				})
 					.then((res) => {
 						console.log('res', res);
@@ -35,6 +38,8 @@
 					.then((data) => {
 						// Consuming the response data
 						console.log('data', data);
+						anaStore.setArguments(parseMargot($docStore.content, data.response.document));
+						editor.console.log('arguments', $anaStore.arguments);
 					});
 				break;
 			case 'span':
@@ -51,22 +56,9 @@
 	}
 
 	function handleResized(size: any) {
-		debouncedUpdate({ tabSize: size });
+		docStore.updateField({ tabSize: size });
 		$pane = size;
 	}
-
-	const update = (docData: any) => {
-		debouncedUpdate(docData);
-	};
-
-	function updateFn(docdata: any) {
-		fetch(`/api/documents/${data.document.id}`, {
-			method: 'POST',
-			body: JSON.stringify(docdata)
-		});
-	}
-
-	const debouncedUpdate = debounce(updateFn, 1000);
 
 	function refocusOnEditor() {
 		editor.focus();
@@ -102,8 +94,8 @@
 					</div>
 				</div>
 			{:then document}
-				<TitleInput content={$docStore.title} update={docStore.updateField} {refocusOnEditor} />
-				<Tiptap bind:this={editor} value={$docStore.content} update={docStore.updateField} />
+				<TitleInput content={docStore} />
+				<Tiptap bind:this={editor} analysis={anaStore} value={docStore} />
 			{/await}
 		</div>
 		<div class:hidden={$pane !== 0} class="absolute right-0 mr-3 -translate-y-7 top-[6.5rem]">
@@ -122,7 +114,7 @@
 	>
 	{#if hasAnalysis}
 		<Pane snapSize={10} size={15}>
-			<CardList {cards} />
+			<CardList analysis={anaStore} content={$docStore.content} />
 		</Pane>
 	{/if}
 	<Pane snapSize={10} size={$pane}>

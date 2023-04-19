@@ -5,10 +5,10 @@
 	import Placeholder from '@tiptap/extension-placeholder';
 	import { Extension } from '@tiptap/core';
 
-	let editor;
-	export let content = '';
-	export let update = (_) => {};
+	export let content;
 	export let refocusOnEditor = () => {};
+
+	let editor;
 
 	const DisableEnter = Extension.create({
 		addKeyboardShortcuts() {
@@ -36,9 +36,9 @@
 						'overflow-hidden flex-wrap resize-none h-auto w-full border-none text-xl font-semibold focus:outline-none'
 				}
 			},
-			content: content,
+			content: $content.title,
 			onUpdate({ editor }) {
-				update({ title: editor.getText() });
+				content.updateField({ title: editor.getText() });
 			}
 		});
 	});
