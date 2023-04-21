@@ -1,4 +1,9 @@
 import type { Actions } from './$types';
+import { redirect } from '@sveltejs/kit';
+
+export const load = async ({ fetch }) => {
+	throw redirect(303, '/documents');
+};
 
 export const actions: Actions = {
 	switchTheme: async ({ request, cookies }) => {

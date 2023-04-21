@@ -1,20 +1,19 @@
-export const serializeNonPOJOs = (obj) => {
+export const serializeNonPOJOs = (obj: any) => {
 	return structuredClone(obj);
 };
 
 export function debounce(func: any, wait: number) {
 	let timeout: any;
-	return (...args) => {
+	return function(this: any, ...args: Parameters<any>) {
 		clearTimeout(timeout);
 		timeout = setTimeout(() => func.apply(this, args), wait);
 	};
 }
 
-export const getImageURL = (collectionId, recordId, fileName, size = '0x0') => {
-	return `http://localhost:8090/api/files/${collectionId}/${recordId}/${fileName}?thumb=${size}`;
-};
-
-export const validateData = async (formData, schema) => {
+export const validateData = async (
+	formData: Iterable<readonly [PropertyKey, any]>,
+	schema: { parse: (arg0: { [k: string]: any }) => any }
+) => {
 	const body = Object.fromEntries(formData);
 
 	try {
@@ -33,7 +32,7 @@ export const validateData = async (formData, schema) => {
 	}
 };
 
-export function downloadFile(fileContent, fileName, fileType) {
+export function downloadFile(fileContent: BlobPart, fileName: string, fileType: string): void {
 	// create a blob from the string content
 	const blob = new Blob([fileContent], { type: fileType });
 
@@ -65,8 +64,8 @@ function getSubstringLocations(
 	for (const obj of objects) {
 		const textStart = paragraph.indexOf(obj.text.replace(/ ([,.'])/g, '$1'));
 		const textSpan = obj.text.length;
-		let evidenceStart;
-		let evidenceSpan;
+		let evidenceStart: number = 0;
+		let evidenceSpan: number = 0;
 		if (obj.claim_evidence !== undefined) {
 			evidenceStart = paragraph.indexOf(obj.claim_evidence.replace(/ ([,.'])/g, '$1'));
 			evidenceSpan = obj.claim_evidence.length;
@@ -82,6 +81,17 @@ function getSubstringLocations(
 	return results;
 }
 
+export function getRandomLightHexColor(): string {
+	let color = '#';
+	for (let i = 0; i < 3; i++) {
+		const channel = Math.floor(Math.random() * 60 + 186)
+			.toString(16)
+			.padStart(2, '0');
+		color += channel;
+	}
+	return color;
+}
+
 export function getTextFromRanges(paragraph: string, argument: any) {
 	console.log('argument: ', argument);
 	return {
@@ -93,6 +103,9 @@ export function getTextFromRanges(paragraph: string, argument: any) {
 	};
 }
 
-export function parseMargot(text: string, content) {
+export function parseMargot(
+	text: string,
+	content: { text: string; claim_evidence?: string | undefined; claim?: string | undefined }[]
+) {
 	return getSubstringLocations(text, content);
 }

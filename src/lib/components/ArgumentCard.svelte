@@ -1,5 +1,7 @@
 <script lang="ts">
-	export let argument: any;
+	import type { ArgumentInstance } from '$lib/stores/analysis';
+
+	export let argument: ArgumentInstance;
 </script>
 
 <div class="overflow-x-hidden p-2 border card bg-base-200">

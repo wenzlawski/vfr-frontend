@@ -1,5 +1,22 @@
-import { get, writable } from 'svelte/store';
+import { writable } from 'svelte/store';
 // import { debounce } from '$lib/utils';
+
+interface ArgumentComponent {
+  uuid: string;
+  text: string;
+  start: number;
+  end: number;
+}
+
+export interface ArgumentInstance {
+  uuid: string;
+  text: string;
+  color: string;
+  claim: ArgumentComponent;
+  premise: ArgumentComponent;
+  start: number;
+  end: number;
+}
 
 const initialState = {
   arguments: [],
@@ -8,7 +25,7 @@ const initialState = {
 };
 
 const createAnaStore = () => {
-  const { subscribe, set, update } = writable(initialState);
+  const { subscribe, update } = writable(initialState);
   // const saveDebounced = debounce(async () => {
   //   await save();
   // }, 1000); // Adjust the debounce time as needed

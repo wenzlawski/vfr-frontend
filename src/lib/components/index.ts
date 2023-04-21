@@ -1,4 +1,5 @@
 import DocumentItem from './DocumentItem.svelte';
+import Home from './Home.svelte';
 import PreviewItem from './PreviewItem.svelte';
 import PreviewTrashItem from './PreviewTrashItem.svelte';
 import PreviewItemNew from './PreviewItemNew.svelte';
@@ -18,6 +19,7 @@ import RadioFeedback from './RadioFeedback.svelte';
 import CardList from './CardList.svelte';
 import Waitlist from './Waitlist.svelte';
 export {
+	Home,
 	Waitlist,
 	PreviewTrashItem,
 	CardList,

@@ -1,14 +1,16 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import StarterKit from '@tiptap/starter-kit';
+	import type { Editor as EditorBase } from '@tiptap/core';
 	import { createEditor, Editor, EditorContent } from 'svelte-tiptap';
 	import Placeholder from '@tiptap/extension-placeholder';
 	import Highlight from '@tiptap/extension-highlight';
 	import BubbleMenu from './tiptap/BubbleMenu.svelte';
 	import type { Readable } from 'svelte/store';
-	import { documentStore } from '$lib/stores/document';
-	import { analysisStore } from '$lib/stores/analysis';
-	import { ArgumentSpan } from '$lib/argumentHighlight';
+	import type { documentStore } from '$lib/stores/document';
+	import type { analysisStore } from '$lib/stores/analysis';
+	import { Arguments } from '$lib/arguments';
+	import { getRandomLightHexColor } from '$lib/utils';
 
 	export let value: typeof documentStore;
 	export let analysis: typeof analysisStore;
@@ -56,19 +58,38 @@
 		$editor.commands.focus();
 	}
 
+	let showArgumentMenu = false;
+	let isArgumentModeOn = false;
+	let isTextSelected = false;
+	let showAddArgumentSection = true;
+
+	let activeArgumentsInstance;
+
+	const findArgumentsAndStoreValues = (editor: EditorBase) => {
+		const tempArguments: any[] = [];
+		editor.state.doc.descendants((node, pos) => {
+			const { marks } = node;
+			marks.forEach((mark) => {
+				if (mark.type.name === 'argument') {
+					const markArguments = mark.attrs.argument;
+					const jsonArguments = markArguments ? JSON.parse(markArguments) : null;
+					if (jsonArguments !== null) {
+						tempArguments.push({
+							node,
+							jsonArguments,
+							from: pos,
+							to: pos + (node.text?.length || 0),
+							text: node.text
+						});
+					}
+				}
+			});
+		});
+		$analysis.arguments = tempArguments;
+	};
+
 	let editor: Readable<Editor>;
 	let timer: any;
-
-	function getRandomLightHexColor(): string {
-		let color = '#';
-		for (let i = 0; i < 3; i++) {
-			const channel = Math.floor(Math.random() * 60 + 186)
-				.toString(16)
-				.padStart(2, '0');
-			color += channel;
-		}
-		return color;
-	}
 
 	function highlightArgument(start: number, end: number) {
 		if (start === -1) return;
@@ -108,7 +129,7 @@
 				Highlight.configure({
 					multicolor: true
 				}),
-				ArgumentSpan.configure({})
+				Arguments.configure({})
 			],
 			editorProps: {
 				attributes: {
@@ -119,33 +140,62 @@
 			content: $value.content,
 			onUpdate({ editor }) {
 				value.updateField({ content: editor.getText() });
+				findArgumentsAndStoreValues(editor);
+				setCurrentArgument(editor);
 			},
 			onSelectionUpdate({ editor, transaction }) {
+				setCurrentArgument(editor);
+				isTextSelected = !!editor.state.selection.content().size;
 				if (transaction.selection.$anchor.pos !== transaction.selection.$head.pos) {
 					toolTip(transaction.selection);
 				} else {
 					clearTimeout(timer);
-					if (editor.isActive('argumentspan')) {
+					if (editor.isActive('argument')) {
 						console.log('on argument');
 						// editor.
 					}
 				}
+			},
+			onCreate({ editor }) {
+				findArgumentsAndStoreValues(editor);
 			}
 		});
 	});
+
+	const setCurrentArgument = (editor: EditorBase) => {
+		const newVal = editor.isActive('argument');
+		if (newVal) {
+			setTimeout(() => (showArgumentMenu = newVal), 50);
+			showAddArgumentSection = !editor.state.selection.empty;
+			const parsedArgument = JSON.parse(editor.getAttributes('argument').argument);
+			parsedArgument.argument =
+				typeof parsedArgument.arguments === 'string'
+					? JSON.parse(parsedArgument.arguments)
+					: parsedArgument.arguments;
+			activeArgumentsInstance = parsedArgument;
+		} else {
+			activeArgumentsInstance = {};
+		}
+	};
+
+	const toggleArgumentMode = () => {
+		isArgumentModeOn = !isArgumentModeOn;
+		if (isArgumentModeOn) $editor.setEditable(false);
+		else $editor.setEditable(true);
+	};
 </script>
 
 <div class="overflow-scroll">
-	<button class="btn" on:click={() => displayArguments(args)}> Display </button>
-	<button class="btn" on:click={() => $editor.commands.toggleHighlight()}> Highlight </button>
-	<button class="btn" on:click={() => displayArguments($analysis.arguments)}> Arguments </button>
-	<button
-		class="btn"
-		on:click={() =>
-			$editor.commands.toggleArgument({ color: getRandomLightHexColor(), id: 'test' })}
-	>
-		Set arg
-	</button>
+	<!-- <button class="btn" on:click={() => displayArguments(args)}> Display </button> -->
+	<!-- <button class="btn" on:click={() => $editor.commands.toggleHighlight()}> Highlight </button> -->
+	<!-- <button class="btn" on:click={() => displayArguments($analysis.arguments)}> Arguments </button> -->
+	<!-- <button -->
+	<!-- 	class="btn" -->
+	<!-- 	on:click={() => -->
+	<!-- 		$editor.commands.toggleArgument({ color: getRandomLightHexColor(), id: 'test' })} -->
+	<!-- > -->
+	<!-- 	Set arg -->
+	<!-- </button> -->
 	{#if editor}
 		<BubbleMenu {editor} />
 		<!-- {$editor.getHTML()} -->

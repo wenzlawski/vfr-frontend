@@ -17,6 +17,7 @@
 	docStore.init(data.document.document._doc);
 
 	let pane = writable($docStore.tabSize || 0);
+	let threshold;
 
 	let anaStore = analysisStore;
 
@@ -80,7 +81,7 @@
 	horizontal={false}
 >
 	<Pane minSize={20}>
-		<div class="justify-center px-4 mx-auto mt-8 md:max-w-2xl xl:max-w-3xl">
+		<div class="justify-center px-4 mx-auto mt-4 md:max-w-2xl xl:max-w-3xl">
 			{#await data.document}
 				<div class="flex justify-center items-center mt-20">
 					<div
@@ -94,7 +95,20 @@
 					</div>
 				</div>
 			{:then document}
-				<TitleInput content={docStore} />
+				<div class="flex flex-row">
+					<div class="flex-1">
+						<TitleInput content={docStore} />
+					</div>
+					{#if editor}
+						<p>Text</p>
+						{editor}
+						<div class:hidden={!editor?.editable} class="flex justify-center items-center h-full">
+							<div class="flex flex-col justify-center items-center">
+								<button class="btn btn-sm"><ion-icon name="lock-closed-outline" /></button>
+							</div>
+						</div>
+					{/if}
+				</div>
 				<Tiptap bind:this={editor} analysis={anaStore} value={docStore} />
 			{/await}
 		</div>
