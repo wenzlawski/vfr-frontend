@@ -1,16 +1,15 @@
 <script lang="ts">
 	import { page } from '$app/stores';
-	import { signIn, signOut } from '@auth/sveltekit/client';
-	import Tiptap from '$lib/components/Tiptap.svelte';
+	import { signOut } from '@auth/sveltekit/client';
 </script>
 
 <svelte:head>
 	<title>Readanalytics</title>
-	<meta name="description" content="Natural Language App" />
+	<meta name="description" content="Readanalytics" />
 </svelte:head>
 
 <section class="flex flex-col justify-center items-center flex-[60%]">
-	<h1 class="text-3xl font-bold">Welcome</h1>
+	<h1 class="text-3xl font-bold">Readanalytics</h1>
 	<p>
 		{#if Object.keys($page.data.session || {}).length}
 			{#if $page.data.session?.user?.image}
@@ -26,6 +25,4 @@
 			<a href="/auth/signin" class="button">Sign in</a>
 		{/if}
 	</p>
-
-	<Tiptap />
 </section>

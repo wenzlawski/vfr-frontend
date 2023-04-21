@@ -127,7 +127,7 @@
 					clearTimeout(timer);
 					if (editor.isActive('argumentspan')) {
 						console.log('on argument');
-						editor.
+						// editor.
 					}
 				}
 			}
@@ -148,7 +148,7 @@
 	</button>
 	{#if editor}
 		<BubbleMenu {editor} />
-		{$editor.getHTML()}
+		<!-- {$editor.getHTML()} -->
 	{/if}
 	<EditorContent editor={$editor} />
 </div>
