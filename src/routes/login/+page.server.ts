@@ -2,9 +2,9 @@
 // import { redirect } from '@sveltejs/kit';
 
 export async function load({ fetch }) {
-	return {
-		providers: fetch('/auth/providers').then((res) => res.json())
-	};
+  return {
+    providers: fetch('/auth/providers').then((res) => res.json())
+  };
 }
 
 // export const actions: Actions = {

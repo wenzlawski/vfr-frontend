@@ -1,27 +1,30 @@
 <script lang="ts">
-	import { BubbleMenu } from 'svelte-tiptap';
-	import { createEventDispatcher } from 'svelte';
+  import { BubbleMenu } from 'svelte-tiptap';
+  import { createEventDispatcher } from 'svelte';
 
-	const dispatch = createEventDispatcher();
+  const dispatch = createEventDispatcher();
 
-	export let editor;
+  export let editor;
 
-	function handleAdd() {
-		console.log('add');
-		dispatch('message', {
-			action: 'add'
-		});
-	}
+  function handleAdd() {
+    console.log('add');
+    dispatch('message', {
+      action: 'add'
+    });
+  }
 </script>
 
 <BubbleMenu editor={$editor}>
-	<div class="card bg-base-200 rounded-xl border border-base-300 ">
-		<div class="flex justify-center tooltip m-0 cursor-pointer" data-tip="Add">
-			<button on:click={handleAdd} class="btn btn-sm btn-ghost flex justify-center items-center">
-				<ion-icon name="add-outline" size="large" />
-			</button>
-		</div>
-	</div>
+  <div class="card bg-base-200 rounded-xl border border-base-300 ">
+    <div class="flex justify-center tooltip m-0 cursor-pointer" data-tip="Add">
+      <button
+        on:click={handleAdd}
+        class="btn btn-sm btn-ghost flex justify-center items-center"
+      >
+        <ion-icon name="add-outline" size="large" />
+      </button>
+    </div>
+  </div>
 </BubbleMenu>
 
 <!-- <style lang="scss">

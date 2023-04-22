@@ -1,23 +1,25 @@
 <script lang="ts">
-	import { page } from '$app/stores';
-	import { loginUserSchema } from '$lib/schemas';
-	import { createForm } from 'felte';
-	import { validator } from '@felte/validator-zod';
-	import reporterDom from '@felte/reporter-dom';
-	import { enhance } from '$app/forms';
-	import { FormTextInput } from '$lib/components';
-	import { signIn } from '@auth/sveltekit/client';
-	const { form, errors, isSubmitting, isValid } = createForm({
-		extend: [reporterDom(), validator({ schema: loginUserSchema })] // OR `extend: [validator],`
-	});
+  import { page } from '$app/stores';
+  import { loginUserSchema } from '$lib/schemas';
+  import { createForm } from 'felte';
+  import { validator } from '@felte/validator-zod';
+  import reporterDom from '@felte/reporter-dom';
+  import { enhance } from '$app/forms';
+  import { FormTextInput } from '$lib/components';
+  import { signIn } from '@auth/sveltekit/client';
+  const { form, errors, isSubmitting, isValid } = createForm({
+    extend: [reporterDom(), validator({ schema: loginUserSchema })] // OR `extend: [validator],`
+  });
 </script>
 
 <svelte:head>
-	<title>Login - Readanalytics</title>
+  <title>Login - Readanalytics</title>
 </svelte:head>
 
-<div class="flex flex-col mt-32 items-center h-full w-full px-2 py-3 max-w-lg mx-auto">
-	<!-- <form
+<div
+  class="flex flex-col mt-32 items-center h-full w-full px-2 py-3 max-w-lg mx-auto"
+>
+  <!-- <form
 		use:form
 		use:enhance={({ cancel }) => {
 			if (!$isValid) {
@@ -44,17 +46,19 @@
 		</div>
 	</form>
 	<p>OR</p> -->
-	<h1 class="text-3xl mb-3">Login</h1>
-	{#each Object.keys($page.data.providers) as provider}
-		<div class="w-full max-w-md pt-2">
-			<button
-				on:click={() => signIn($page.data.providers[provider].id)}
-				class="btn btn-primary w-full block p-2 transition-colors hover:bg-blue-400"
-				>Sign In with {$page.data.providers[provider].name}</button
-			>
-		</div>
-	{/each}
-	<p class="text-center mt-5">
-		Don't have an account? <a class="text-blue-600" href="/register">Register here</a>
-	</p>
+  <h1 class="text-3xl mb-3">Login</h1>
+  {#each Object.keys($page.data.providers) as provider}
+    <div class="w-full max-w-md pt-2">
+      <button
+        on:click={() => signIn($page.data.providers[provider].id)}
+        class="btn btn-primary w-full block p-2 transition-colors hover:bg-blue-400"
+        >Sign In with {$page.data.providers[provider].name}</button
+      >
+    </div>
+  {/each}
+  <p class="text-center mt-5">
+    Don't have an account? <a class="text-blue-600" href="/register"
+      >Register here</a
+    >
+  </p>
 </div>

@@ -10,12 +10,11 @@ const config = {
 
   kit: {
     adapter: adapter({
-      runtime: 'nodejs18.x',
+      runtime: 'nodejs18.x'
     }),
     csrf: {
-      checkOrigin: false,
+      checkOrigin: false
     }
-
   }
 };
 

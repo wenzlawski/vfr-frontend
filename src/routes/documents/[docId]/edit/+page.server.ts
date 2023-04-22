@@ -38,12 +38,14 @@ export const actions = {
     // }
 
     try {
-      await locals.pb.collection('documents').update(params.docId, serialize(formData));
+      await locals.pb
+        .collection('documents')
+        .update(params.docId, serialize(formData));
     } catch (err: any) {
       console.log('Error: ', err);
       throw error(err.status, err.message);
     }
 
     throw redirect(303, `/documents`);
-  },
+  }
 };

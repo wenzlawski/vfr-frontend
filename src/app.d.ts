@@ -5,17 +5,17 @@ import type { DefaultSession } from '@auth/core/types';
 
 // and what to do when importing types
 declare namespace App {
-	// interface Locals {}
-	// interface Error {}
-	// interface PageData {}
-	// interface Platform {}
+  // interface Locals {}
+  // interface Error {}
+  // interface PageData {}
+  // interface Platform {}
 }
 
 declare module '@auth/core/types' {
-	interface Session {
-		user: {
-			id: string;
-			theme: string;
-		} & DefaultSession['user'];
-	}
+  interface Session {
+    user: {
+      id: string;
+      theme: string;
+    } & DefaultSession['user'];
+  }
 }

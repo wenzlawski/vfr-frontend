@@ -34,117 +34,117 @@ import { Decoration, DecorationSet, EditorView } from 'prosemirror-view';
 
 // *************** TYPES *****************
 export interface Software {
-	name: string;
-	version: string;
-	buildDate: string;
-	apiVersion: number;
-	premium: boolean;
-	premiumHint: string;
-	status: string;
+  name: string;
+  version: string;
+  buildDate: string;
+  apiVersion: number;
+  premium: boolean;
+  premiumHint: string;
+  status: string;
 }
 
 export interface Warnings {
-	incompleteResults: boolean;
+  incompleteResults: boolean;
 }
 
 export interface DetectedLanguage {
-	name: string;
-	code: string;
-	confidence: number;
+  name: string;
+  code: string;
+  confidence: number;
 }
 
 export interface Language {
-	name: string;
-	code: string;
-	detectedLanguage: DetectedLanguage;
+  name: string;
+  code: string;
+  detectedLanguage: DetectedLanguage;
 }
 
 export interface Replacement {
-	value: string;
+  value: string;
 }
 
 export interface Context {
-	text: string;
-	offset: number;
-	length: number;
+  text: string;
+  offset: number;
+  length: number;
 }
 
 export interface Type {
-	typeName: string;
+  typeName: string;
 }
 
 export interface Category {
-	id: string;
-	name: string;
+  id: string;
+  name: string;
 }
 
 export interface Rule {
-	id: string;
-	description: string;
-	issueType: string;
-	category: Category;
+  id: string;
+  description: string;
+  issueType: string;
+  category: Category;
 }
 
 export interface Match {
-	message: string;
-	shortMessage: string;
-	replacements: Replacement[];
-	offset: number;
-	length: number;
-	context: Context;
-	sentence: string;
-	type: Type;
-	rule: Rule;
-	ignoreForIncompleteSentence: boolean;
-	contextForSureMatch: number;
+  message: string;
+  shortMessage: string;
+  replacements: Replacement[];
+  offset: number;
+  length: number;
+  context: Context;
+  sentence: string;
+  type: Type;
+  rule: Rule;
+  ignoreForIncompleteSentence: boolean;
+  contextForSureMatch: number;
 }
 
 export interface LanguageToolResponse {
-	software: Software;
-	warnings: Warnings;
-	language: Language;
-	matches: Match[];
+  software: Software;
+  warnings: Warnings;
+  language: Language;
+  matches: Match[];
 }
 
 declare module '@tiptap/core' {
-	interface Commands<ReturnType> {
-		languagetool: {
-			/**
-			 * Proofreads whole document
-			 */
-			proofread: () => ReturnType;
+  interface Commands<ReturnType> {
+    languagetool: {
+      /**
+       * Proofreads whole document
+       */
+      proofread: () => ReturnType;
 
-			toggleProofreading: () => ReturnType;
+      toggleProofreading: () => ReturnType;
 
-			ignoreLanguageToolSuggestion: () => ReturnType;
+      ignoreLanguageToolSuggestion: () => ReturnType;
 
-			resetLanguageToolMatch: () => ReturnType;
+      resetLanguageToolMatch: () => ReturnType;
 
-			toggleLanguageTool: () => ReturnType;
+      toggleLanguageTool: () => ReturnType;
 
-			getLanguageToolState: () => ReturnType;
-		};
-	}
+      getLanguageToolState: () => ReturnType;
+    };
+  }
 }
 
 interface TextNodesWithPosition {
-	text: string;
-	from: number;
-	to: number;
+  text: string;
+  from: number;
+  to: number;
 }
 
 interface LanguageToolOptions {
-	language: string;
-	apiUrl: string;
-	automaticMode: boolean;
-	documentId: string | number | undefined;
+  language: string;
+  apiUrl: string;
+  automaticMode: boolean;
+  documentId: string | number | undefined;
 }
 
 interface LanguageToolStorage {
-	match?: Match;
-	loading?: boolean;
-	matchRange?: { from: number; to: number };
-	active: boolean;
+  match?: Match;
+  loading?: boolean;
+  matchRange?: { from: number; to: number };
+  active: boolean;
 }
 // *************** OVER: TYPES *****************
 
@@ -155,7 +155,7 @@ let decorationSet: DecorationSet;
 const db = new Dexie('LanguageToolIgnoredSuggestions');
 
 db.version(1).stores({
-	ignoredWords: `
+  ignoredWords: `
     ++id,
     &value,
     documentId
@@ -177,435 +177,489 @@ let proofReadInitially = false;
 let isLanguageToolActive = true;
 
 export enum LanguageToolHelpingWords {
-	LanguageToolTransactionName = 'languageToolTransaction',
-	MatchUpdatedTransactionName = 'matchUpdated',
-	MatchRangeUpdatedTransactionName = 'matchRangeUpdated',
-	LoadingTransactionName = 'languageToolLoading'
+  LanguageToolTransactionName = 'languageToolTransaction',
+  MatchUpdatedTransactionName = 'matchUpdated',
+  MatchRangeUpdatedTransactionName = 'matchRangeUpdated',
+  LoadingTransactionName = 'languageToolLoading'
 }
 
 const dispatch = (tr: Transaction) => editorView.dispatch(tr);
 
 const updateMatchAndRange = (m?: Match, range?) => {
-	if (m) match = m;
-	else match = undefined;
+  if (m) match = m;
+  else match = undefined;
 
-	if (range) matchRange = range;
-	else matchRange = undefined;
+  if (range) matchRange = range;
+  else matchRange = undefined;
 
-	const tr = editorView.state.tr;
-	tr.setMeta(LanguageToolHelpingWords.MatchUpdatedTransactionName, true);
-	tr.setMeta(LanguageToolHelpingWords.MatchRangeUpdatedTransactionName, true);
+  const tr = editorView.state.tr;
+  tr.setMeta(LanguageToolHelpingWords.MatchUpdatedTransactionName, true);
+  tr.setMeta(LanguageToolHelpingWords.MatchRangeUpdatedTransactionName, true);
 
-	editorView.dispatch(tr);
+  editorView.dispatch(tr);
 };
 
 const mouseEventsListener = (e: Event) => {
-	if (!e.target) return;
+  if (!e.target) return;
 
-	const matchString = (e.target as HTMLSpanElement).getAttribute('match')?.trim();
+  const matchString = (e.target as HTMLSpanElement)
+    .getAttribute('match')
+    ?.trim();
 
-	if (!matchString) {
-		console.error('No match string provided', { matchString });
-		return;
-	}
+  if (!matchString) {
+    console.error('No match string provided', { matchString });
+    return;
+  }
 
-	const { match, from, to } = JSON.parse(matchString);
+  const { match, from, to } = JSON.parse(matchString);
 
-	if (matchString) updateMatchAndRange(match, { from, to });
-	else updateMatchAndRange();
+  if (matchString) updateMatchAndRange(match, { from, to });
+  else updateMatchAndRange();
 };
 
 const debouncedMouseEventsListener = debounce(mouseEventsListener, 50);
 
 const addEventListenersToDecorations = () => {
-	const decorations = document.querySelectorAll('span.lt');
+  const decorations = document.querySelectorAll('span.lt');
 
-	if (!decorations.length) return;
+  if (!decorations.length) return;
 
-	decorations.forEach((el) => {
-		el.addEventListener('mouseover', debouncedMouseEventsListener);
-		el.addEventListener('mouseenter', debouncedMouseEventsListener);
-	});
+  decorations.forEach((el) => {
+    el.addEventListener('mouseover', debouncedMouseEventsListener);
+    el.addEventListener('mouseenter', debouncedMouseEventsListener);
+  });
 };
 
 export function changedDescendants(
-	old: PMNode,
-	cur: PMNode,
-	offset: number,
-	f: (node: PMNode, pos: number, cur: PMNode) => void
+  old: PMNode,
+  cur: PMNode,
+  offset: number,
+  f: (node: PMNode, pos: number, cur: PMNode) => void
 ): void {
-	const oldSize = old.childCount,
-		curSize = cur.childCount;
+  const oldSize = old.childCount,
+    curSize = cur.childCount;
 
-	outer: for (let i = 0, j = 0; i < curSize; i++) {
-		const child = cur.child(i);
+  outer: for (let i = 0, j = 0; i < curSize; i++) {
+    const child = cur.child(i);
 
-		for (let scan = j, e = Math.min(oldSize, i + 3); scan < e; scan++) {
-			if (old.child(scan) === child) {
-				j = scan + 1;
-				offset += child.nodeSize;
-				continue outer;
-			}
-		}
+    for (let scan = j, e = Math.min(oldSize, i + 3); scan < e; scan++) {
+      if (old.child(scan) === child) {
+        j = scan + 1;
+        offset += child.nodeSize;
+        continue outer;
+      }
+    }
 
-		f(child, offset, cur);
+    f(child, offset, cur);
 
-		if (j < oldSize && old.child(j).sameMarkup(child))
-			changedDescendants(old.child(j), child, offset + 1, f);
-		else child.nodesBetween(0, child.content.size, f, offset + 1);
+    if (j < oldSize && old.child(j).sameMarkup(child))
+      changedDescendants(old.child(j), child, offset + 1, f);
+    else child.nodesBetween(0, child.content.size, f, offset + 1);
 
-		offset += child.nodeSize;
-	}
+    offset += child.nodeSize;
+  }
 }
 
 const gimmeDecoration = (from: number, to: number, match: Match) =>
-	Decoration.inline(from, to, {
-		class: `lt lt-${match.rule.issueType}`,
-		nodeName: 'span',
-		match: JSON.stringify({ match, from, to })
-	});
+  Decoration.inline(from, to, {
+    class: `lt lt-${match.rule.issueType}`,
+    nodeName: 'span',
+    match: JSON.stringify({ match, from, to })
+  });
 
 const moreThan500Words = (s: string) => s.trim().split(/\s+/).length >= 500;
 
-const getMatchAndSetDecorations = async (doc: PMNode, text: string, originalFrom: number) => {
-	const postOptions = {
-		method: 'POST',
-		headers: {
-			'Content-Type': 'application/x-www-form-urlencoded',
-			Accept: 'application/json'
-		},
-		body: `text=${encodeURIComponent(text)}&language=en-US&enabledOnly=false`
-	};
+const getMatchAndSetDecorations = async (
+  doc: PMNode,
+  text: string,
+  originalFrom: number
+) => {
+  const postOptions = {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+      Accept: 'application/json'
+    },
+    body: `text=${encodeURIComponent(text)}&language=en-US&enabledOnly=false`
+  };
 
-	const ltRes: LanguageToolResponse = await (await fetch(apiUrl, postOptions)).json();
+  const ltRes: LanguageToolResponse = await (
+    await fetch(apiUrl, postOptions)
+  ).json();
 
-	const { matches } = ltRes;
+  const { matches } = ltRes;
 
-	const decorations: Decoration[] = [];
+  const decorations: Decoration[] = [];
 
-	for (const match of matches) {
-		const docFrom = match.offset + originalFrom;
-		const docTo = docFrom + match.length;
+  for (const match of matches) {
+    const docFrom = match.offset + originalFrom;
+    const docTo = docFrom + match.length;
 
-		if (extensionDocId) {
-			const content = text.substring(match.offset - 1, match.offset + match.length - 1);
-			const result = await (db as any).ignoredWords.get({ value: content });
+    if (extensionDocId) {
+      const content = text.substring(
+        match.offset - 1,
+        match.offset + match.length - 1
+      );
+      const result = await (db as any).ignoredWords.get({ value: content });
 
-			if (!result) decorations.push(gimmeDecoration(docFrom, docTo, match));
-		} else {
-			decorations.push(gimmeDecoration(docFrom, docTo, match));
-		}
-	}
+      if (!result) decorations.push(gimmeDecoration(docFrom, docTo, match));
+    } else {
+      decorations.push(gimmeDecoration(docFrom, docTo, match));
+    }
+  }
 
-	const decorationsToRemove = decorationSet.find(originalFrom, originalFrom + text.length);
+  const decorationsToRemove = decorationSet.find(
+    originalFrom,
+    originalFrom + text.length
+  );
 
-	decorationSet = decorationSet.remove(decorationsToRemove);
+  decorationSet = decorationSet.remove(decorationsToRemove);
 
-	decorationSet = decorationSet.add(doc, decorations);
+  decorationSet = decorationSet.add(doc, decorations);
 
-	if (editorView)
-		dispatch(
-			editorView.state.tr.setMeta(LanguageToolHelpingWords.LanguageToolTransactionName, true)
-		);
+  if (editorView)
+    dispatch(
+      editorView.state.tr.setMeta(
+        LanguageToolHelpingWords.LanguageToolTransactionName,
+        true
+      )
+    );
 
-	setTimeout(addEventListenersToDecorations, 100);
+  setTimeout(addEventListenersToDecorations, 100);
 };
 
-const debouncedGetMatchAndSetDecorations = debounce(getMatchAndSetDecorations, 300);
+const debouncedGetMatchAndSetDecorations = debounce(
+  getMatchAndSetDecorations,
+  300
+);
 
 let lastOriginalFrom = 0;
 
 const onNodeChanged = (doc: PMNode, text: string, originalFrom: number) => {
-	if (originalFrom !== lastOriginalFrom) getMatchAndSetDecorations(doc, text, originalFrom);
-	else debouncedGetMatchAndSetDecorations(doc, text, originalFrom);
+  if (originalFrom !== lastOriginalFrom)
+    getMatchAndSetDecorations(doc, text, originalFrom);
+  else debouncedGetMatchAndSetDecorations(doc, text, originalFrom);
 
-	lastOriginalFrom = originalFrom;
+  lastOriginalFrom = originalFrom;
 };
 
 const proofreadAndDecorateWholeDoc = async (doc: PMNode, nodePos = 0) => {
-	textNodesWithPosition = [];
+  textNodesWithPosition = [];
 
-	let index = 0;
-	doc?.descendants((node, pos) => {
-		if (!node.isText) {
-			index += 1;
-			return;
-		}
+  let index = 0;
+  doc?.descendants((node, pos) => {
+    if (!node.isText) {
+      index += 1;
+      return;
+    }
 
-		const intermediateTextNodeWIthPos = {
-			text: '',
-			from: -1,
-			to: -1
-		};
+    const intermediateTextNodeWIthPos = {
+      text: '',
+      from: -1,
+      to: -1
+    };
 
-		if (textNodesWithPosition[index]) {
-			intermediateTextNodeWIthPos.text = textNodesWithPosition[index].text + node.text;
-			intermediateTextNodeWIthPos.from = textNodesWithPosition[index].from + nodePos;
-			intermediateTextNodeWIthPos.to =
-				intermediateTextNodeWIthPos.from + intermediateTextNodeWIthPos.text.length + nodePos;
-		} else {
-			intermediateTextNodeWIthPos.text = node.text;
-			intermediateTextNodeWIthPos.from = pos + nodePos;
-			intermediateTextNodeWIthPos.to = pos + nodePos + node.text.length;
-		}
+    if (textNodesWithPosition[index]) {
+      intermediateTextNodeWIthPos.text =
+        textNodesWithPosition[index].text + node.text;
+      intermediateTextNodeWIthPos.from =
+        textNodesWithPosition[index].from + nodePos;
+      intermediateTextNodeWIthPos.to =
+        intermediateTextNodeWIthPos.from +
+        intermediateTextNodeWIthPos.text.length +
+        nodePos;
+    } else {
+      intermediateTextNodeWIthPos.text = node.text;
+      intermediateTextNodeWIthPos.from = pos + nodePos;
+      intermediateTextNodeWIthPos.to = pos + nodePos + node.text.length;
+    }
 
-		textNodesWithPosition[index] = intermediateTextNodeWIthPos;
-	});
+    textNodesWithPosition[index] = intermediateTextNodeWIthPos;
+  });
 
-	textNodesWithPosition = textNodesWithPosition.filter(Boolean);
+  textNodesWithPosition = textNodesWithPosition.filter(Boolean);
 
-	let finalText = '';
+  let finalText = '';
 
-	const chunksOf500Words: { from: number; text: string }[] = [];
+  const chunksOf500Words: { from: number; text: string }[] = [];
 
-	let upperFrom = 0 + nodePos;
-	let newDataSet = true;
+  let upperFrom = 0 + nodePos;
+  let newDataSet = true;
 
-	let lastPos = 1 + nodePos;
+  let lastPos = 1 + nodePos;
 
-	for (const { text, from, to } of textNodesWithPosition) {
-		if (!newDataSet) {
-			upperFrom = from;
+  for (const { text, from, to } of textNodesWithPosition) {
+    if (!newDataSet) {
+      upperFrom = from;
 
-			newDataSet = true;
-		} else {
-			const diff = from - lastPos;
-			if (diff > 0) finalText += Array(diff + 1).join(' ');
-		}
+      newDataSet = true;
+    } else {
+      const diff = from - lastPos;
+      if (diff > 0) finalText += Array(diff + 1).join(' ');
+    }
 
-		lastPos = to;
+    lastPos = to;
 
-		finalText += text;
+    finalText += text;
 
-		if (moreThan500Words(finalText)) {
-			const updatedFrom = chunksOf500Words.length ? upperFrom : upperFrom + 1;
+    if (moreThan500Words(finalText)) {
+      const updatedFrom = chunksOf500Words.length ? upperFrom : upperFrom + 1;
 
-			chunksOf500Words.push({
-				from: updatedFrom,
-				text: finalText
-			});
+      chunksOf500Words.push({
+        from: updatedFrom,
+        text: finalText
+      });
 
-			finalText = '';
-			newDataSet = false;
-		}
-	}
+      finalText = '';
+      newDataSet = false;
+    }
+  }
 
-	chunksOf500Words.push({
-		from: chunksOf500Words.length ? upperFrom : 1,
-		text: finalText
-	});
+  chunksOf500Words.push({
+    from: chunksOf500Words.length ? upperFrom : 1,
+    text: finalText
+  });
 
-	const requests = chunksOf500Words.map(({ text, from }) =>
-		getMatchAndSetDecorations(doc, text, from)
-	);
+  const requests = chunksOf500Words.map(({ text, from }) =>
+    getMatchAndSetDecorations(doc, text, from)
+  );
 
-	if (editorView)
-		dispatch(editorView.state.tr.setMeta(LanguageToolHelpingWords.LoadingTransactionName, true));
-	Promise.all(requests).then(() => {
-		if (editorView)
-			dispatch(editorView.state.tr.setMeta(LanguageToolHelpingWords.LoadingTransactionName, false));
-	});
+  if (editorView)
+    dispatch(
+      editorView.state.tr.setMeta(
+        LanguageToolHelpingWords.LoadingTransactionName,
+        true
+      )
+    );
+  Promise.all(requests).then(() => {
+    if (editorView)
+      dispatch(
+        editorView.state.tr.setMeta(
+          LanguageToolHelpingWords.LoadingTransactionName,
+          false
+        )
+      );
+  });
 
-	proofReadInitially = true;
+  proofReadInitially = true;
 };
 
-const debouncedProofreadAndDecorate = debounce(proofreadAndDecorateWholeDoc, 500);
+const debouncedProofreadAndDecorate = debounce(
+  proofreadAndDecorateWholeDoc,
+  500
+);
 
-export const LanguageTool = Extension.create<LanguageToolOptions, LanguageToolStorage>({
-	name: 'languagetool',
+export const LanguageTool = Extension.create<
+  LanguageToolOptions,
+  LanguageToolStorage
+>({
+  name: 'languagetool',
 
-	addOptions() {
-		return {
-			language: 'auto',
-			apiUrl: process?.env?.VUE_APP_LANGUAGE_TOOL_URL + 'check',
-			automaticMode: true,
-			documentId: undefined
-		};
-	},
+  addOptions() {
+    return {
+      language: 'auto',
+      apiUrl: process?.env?.VUE_APP_LANGUAGE_TOOL_URL + 'check',
+      automaticMode: true,
+      documentId: undefined
+    };
+  },
 
-	addStorage() {
-		return {
-			match: match,
-			loading: false,
-			matchRange: {
-				from: -1,
-				to: -1
-			},
-			active: isLanguageToolActive
-		};
-	},
+  addStorage() {
+    return {
+      match: match,
+      loading: false,
+      matchRange: {
+        from: -1,
+        to: -1
+      },
+      active: isLanguageToolActive
+    };
+  },
 
-	addCommands() {
-		return {
-			proofread:
-				() =>
-				({ tr }) => {
-					apiUrl = this.options.apiUrl;
+  addCommands() {
+    return {
+      proofread:
+        () =>
+        ({ tr }) => {
+          apiUrl = this.options.apiUrl;
 
-					proofreadAndDecorateWholeDoc(tr.doc);
-					return true;
-				},
+          proofreadAndDecorateWholeDoc(tr.doc);
+          return true;
+        },
 
-			ignoreLanguageToolSuggestion:
-				() =>
-				({ editor }) => {
-					if (this.options.documentId === undefined)
-						throw new Error('Please provide a unique Document ID(number|string)');
+      ignoreLanguageToolSuggestion:
+        () =>
+        ({ editor }) => {
+          if (this.options.documentId === undefined)
+            throw new Error(
+              'Please provide a unique Document ID(number|string)'
+            );
 
-					const { selection, doc } = editor.state;
-					const { from, to } = selection;
-					decorationSet = decorationSet.remove(decorationSet.find(from, to));
+          const { selection, doc } = editor.state;
+          const { from, to } = selection;
+          decorationSet = decorationSet.remove(decorationSet.find(from, to));
 
-					const content = doc.textBetween(from, to);
+          const content = doc.textBetween(from, to);
 
-					(db as any).ignoredWords.add({
-						value: content,
-						documentId: `${extensionDocId}`
-					});
+          (db as any).ignoredWords.add({
+            value: content,
+            documentId: `${extensionDocId}`
+          });
 
-					return false;
-				},
-			resetLanguageToolMatch:
-				() =>
-				({
-					editor: {
-						view: {
-							dispatch,
-							state: { tr }
-						}
-					}
-				}) => {
-					match = null;
-					matchRange = null;
+          return false;
+        },
+      resetLanguageToolMatch:
+        () =>
+        ({
+          editor: {
+            view: {
+              dispatch,
+              state: { tr }
+            }
+          }
+        }) => {
+          match = null;
+          matchRange = null;
 
-					dispatch(
-						tr
-							.setMeta(LanguageToolHelpingWords.MatchRangeUpdatedTransactionName, true)
-							.setMeta(LanguageToolHelpingWords.MatchUpdatedTransactionName, true)
-					);
+          dispatch(
+            tr
+              .setMeta(
+                LanguageToolHelpingWords.MatchRangeUpdatedTransactionName,
+                true
+              )
+              .setMeta(
+                LanguageToolHelpingWords.MatchUpdatedTransactionName,
+                true
+              )
+          );
 
-					return false;
-				},
+          return false;
+        },
 
-			toggleLanguageTool:
-				() =>
-				({ commands }) => {
-					isLanguageToolActive = !isLanguageToolActive;
+      toggleLanguageTool:
+        () =>
+        ({ commands }) => {
+          isLanguageToolActive = !isLanguageToolActive;
 
-					if (isLanguageToolActive) commands.proofread();
-					else commands.resetLanguageToolMatch();
+          if (isLanguageToolActive) commands.proofread();
+          else commands.resetLanguageToolMatch();
 
-					this.storage.active = isLanguageToolActive;
+          this.storage.active = isLanguageToolActive;
 
-					return false;
-				},
+          return false;
+        },
 
-			getLanguageToolState: () => () => isLanguageToolActive
-		};
-	},
+      getLanguageToolState: () => () => isLanguageToolActive
+    };
+  },
 
-	addProseMirrorPlugins() {
-		const { apiUrl: optionsApiUrl, documentId } = this.options;
+  addProseMirrorPlugins() {
+    const { apiUrl: optionsApiUrl, documentId } = this.options;
 
-		apiUrl = optionsApiUrl;
+    apiUrl = optionsApiUrl;
 
-		return [
-			new Plugin({
-				key: new PluginKey('languagetoolPlugin'),
-				props: {
-					decorations(state) {
-						return this.getState(state);
-					},
-					attributes: {
-						spellcheck: 'false',
-						isLanguageToolActive: `${isLanguageToolActive}`
-					},
+    return [
+      new Plugin({
+        key: new PluginKey('languagetoolPlugin'),
+        props: {
+          decorations(state) {
+            return this.getState(state);
+          },
+          attributes: {
+            spellcheck: 'false',
+            isLanguageToolActive: `${isLanguageToolActive}`
+          },
 
-					handlePaste(view) {
-						const { docChanged } = view.state.tr;
+          handlePaste(view) {
+            const { docChanged } = view.state.tr;
 
-						debugger;
-						if (docChanged) debouncedProofreadAndDecorate(view.state.tr.doc);
+            debugger;
+            if (docChanged) debouncedProofreadAndDecorate(view.state.tr.doc);
 
-						return false;
-					}
-				},
-				state: {
-					init: (_, state) => {
-						decorationSet = DecorationSet.create(state.doc, []);
+            return false;
+          }
+        },
+        state: {
+          init: (_, state) => {
+            decorationSet = DecorationSet.create(state.doc, []);
 
-						if (this.options.automaticMode) proofreadAndDecorateWholeDoc(state.doc);
+            if (this.options.automaticMode)
+              proofreadAndDecorateWholeDoc(state.doc);
 
-						if (documentId) extensionDocId = documentId;
+            if (documentId) extensionDocId = documentId;
 
-						return decorationSet;
-					},
-					apply: (tr) => {
-						if (!isLanguageToolActive) return DecorationSet.empty;
+            return decorationSet;
+          },
+          apply: (tr) => {
+            if (!isLanguageToolActive) return DecorationSet.empty;
 
-						const matchUpdated = tr.getMeta(LanguageToolHelpingWords.MatchUpdatedTransactionName);
-						const matchRangeUpdated = tr.getMeta(
-							LanguageToolHelpingWords.MatchRangeUpdatedTransactionName
-						);
+            const matchUpdated = tr.getMeta(
+              LanguageToolHelpingWords.MatchUpdatedTransactionName
+            );
+            const matchRangeUpdated = tr.getMeta(
+              LanguageToolHelpingWords.MatchRangeUpdatedTransactionName
+            );
 
-						const loading = tr.getMeta(LanguageToolHelpingWords.LoadingTransactionName);
+            const loading = tr.getMeta(
+              LanguageToolHelpingWords.LoadingTransactionName
+            );
 
-						if (loading) this.storage.loading = true;
-						else this.storage.loading = false;
+            if (loading) this.storage.loading = true;
+            else this.storage.loading = false;
 
-						if (matchUpdated) this.storage.match = match;
+            if (matchUpdated) this.storage.match = match;
 
-						if (matchRangeUpdated) this.storage.matchRange = matchRange;
+            if (matchRangeUpdated) this.storage.matchRange = matchRange;
 
-						const languageToolDecorations = tr.getMeta(
-							LanguageToolHelpingWords.LanguageToolTransactionName
-						);
+            const languageToolDecorations = tr.getMeta(
+              LanguageToolHelpingWords.LanguageToolTransactionName
+            );
 
-						if (languageToolDecorations) return decorationSet;
+            if (languageToolDecorations) return decorationSet;
 
-						if (tr.docChanged && this.options.automaticMode) {
-							if (!proofReadInitially) debouncedProofreadAndDecorate(tr.doc);
-							else {
-								const {
-									selection: { from, to }
-								} = tr;
+            if (tr.docChanged && this.options.automaticMode) {
+              if (!proofReadInitially) debouncedProofreadAndDecorate(tr.doc);
+              else {
+                const {
+                  selection: { from, to }
+                } = tr;
 
-								let changedNodeWithPos: { node: PMNode; pos: number };
+                let changedNodeWithPos: { node: PMNode; pos: number };
 
-								const currentBlockNode = tr.doc.descendants((node, pos) => {
-									if (!node.isBlock) return false;
+                const currentBlockNode = tr.doc.descendants((node, pos) => {
+                  if (!node.isBlock) return false;
 
-									const [nodeFrom, nodeTo] = [pos, pos + node.nodeSize];
+                  const [nodeFrom, nodeTo] = [pos, pos + node.nodeSize];
 
-									if (!(nodeFrom <= from && to <= nodeTo)) return;
+                  if (!(nodeFrom <= from && to <= nodeTo)) return;
 
-									changedNodeWithPos = { node, pos };
-								});
+                  changedNodeWithPos = { node, pos };
+                });
 
-								if (changedNodeWithPos) {
-									onNodeChanged(
-										changedNodeWithPos.node,
-										changedNodeWithPos.node.textContent,
-										changedNodeWithPos.pos + 1
-									);
-								}
-							}
-						}
+                if (changedNodeWithPos) {
+                  onNodeChanged(
+                    changedNodeWithPos.node,
+                    changedNodeWithPos.node.textContent,
+                    changedNodeWithPos.pos + 1
+                  );
+                }
+              }
+            }
 
-						decorationSet = decorationSet.map(tr.mapping, tr.doc);
+            decorationSet = decorationSet.map(tr.mapping, tr.doc);
 
-						setTimeout(addEventListenersToDecorations, 100);
+            setTimeout(addEventListenersToDecorations, 100);
 
-						return decorationSet;
-					}
-				},
-				view: () => ({
-					update: (view) => {
-						editorView = view;
-						setTimeout(addEventListenersToDecorations, 100);
-					}
-				})
-			})
-		];
-	}
+            return decorationSet;
+          }
+        },
+        view: () => ({
+          update: (view) => {
+            editorView = view;
+            setTimeout(addEventListenersToDecorations, 100);
+          }
+        })
+      })
+    ];
+  }
 });
