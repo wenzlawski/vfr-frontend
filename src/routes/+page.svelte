@@ -9,7 +9,7 @@
 	<meta name="description" content="Readanalytics" />
 </svelte:head>
 
-<section class="flex flex-col justify-center items-center flex-[60%]">
+<section class="flex flex-col justify-center items-center flex-[80%]">
 	<Home />
 
 	<!-- <h1 class="text-3xl font-bold">Readanalytics</h1> -->

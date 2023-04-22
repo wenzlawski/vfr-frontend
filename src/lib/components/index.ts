@@ -18,7 +18,9 @@ import HelpDropdown from './HelpDropdown.svelte';
 import RadioFeedback from './RadioFeedback.svelte';
 import CardList from './CardList.svelte';
 import Waitlist from './Waitlist.svelte';
+import Tiptap from './Tiptap.svelte';
 export {
+	Tiptap,
 	Home,
 	Waitlist,
 	PreviewTrashItem,

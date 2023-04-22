@@ -4,6 +4,8 @@
 // 3. A database dump function
 
 import RemoteEndpoint from './handler';
+import type { ArgumentInstance, ArgumentComponent } from '$lib/stores/analysis';
+import { parseArgument } from '$lib/utils';
 
 class MargotEndpoint extends RemoteEndpoint {
 	protected async makeRequest(data: string, opts: any): Promise<any> {
@@ -23,9 +25,11 @@ class MargotEndpoint extends RemoteEndpoint {
 		return response;
 	}
 
-	protected handleResponse(response: any): any {
+	protected async handleResponse(response: any): Promise<any> {
 		// parge the response into a Analytics object and return it
-		return response.json();
+		const data = await response.json();
+		console.log(data);
+		return data.document;
 	}
 }
 

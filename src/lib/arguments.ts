@@ -16,7 +16,7 @@ declare module '@tiptap/core' {
 	}
 }
 
-export const ArgumentSpan = Mark.create<ArgumentSpanOptions>({
+export const Arguments = Mark.create<ArgumentSpanOptions>({
 	name: 'argument',
 
 	addOptions() {
@@ -75,7 +75,6 @@ export const ArgumentSpan = Mark.create<ArgumentSpanOptions>({
 			setArgument:
 				(attributes) =>
 					({ commands }) => {
-						console.log('setArgument', attributes);
 						// return commands.setMark(this.name, attributes);
 						return commands.setMark(this.name, attributes);
 					},

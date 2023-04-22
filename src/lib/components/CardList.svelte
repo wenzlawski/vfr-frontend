@@ -4,6 +4,8 @@
 
 	export let analysis: any;
 	export let content: string;
+
+	console.log($analysis.arguments);
 </script>
 
 {#if !$analysis.hasAnalysis}
@@ -24,7 +26,7 @@
 {:else}
 	<div class="overflow-y-scroll p-2 space-y-2 h-full">
 		{#each $analysis.arguments as argument}
-			<ArgumentCard argument={getTextFromRanges(content, argument)} />
+			<ArgumentCard {argument} />
 		{/each}
 	</div>
 {/if}

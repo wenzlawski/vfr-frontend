@@ -1,7 +1,6 @@
 import { writable } from 'svelte/store';
-// import { debounce } from '$lib/utils';
 
-interface ArgumentComponent {
+export interface ArgumentComponent {
   uuid: string;
   text: string;
   start: number;
@@ -10,16 +9,18 @@ interface ArgumentComponent {
 
 export interface ArgumentInstance {
   uuid: string;
+  confidence: number;
+  sufficiency: number;
   text: string;
-  color: string;
-  claim: ArgumentComponent;
-  premise: ArgumentComponent;
+  // claim: ArgumentComponent;
+  // premise: ArgumentComponent;
   start: number;
   end: number;
 }
 
 const initialState = {
   arguments: [],
+  text: '',
   isRunning: false,
   hasAnalysis: false
 };
@@ -49,14 +50,16 @@ const createAnaStore = () => {
     async init() {
       update((doc) => {
         doc = initialState;
+        doc.arguments = [];
         doc.isRunning = true;
         return doc;
       });
     },
 
-    async setArguments(args: any) {
+    async setArguments(args: any, text: string) {
       update((doc) => {
         doc.arguments = args;
+        doc.text = text;
         doc.hasAnalysis = true;
         doc.isRunning = false;
         return doc;

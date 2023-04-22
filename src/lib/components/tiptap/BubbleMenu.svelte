@@ -1,10 +1,16 @@
 <script lang="ts">
 	import { BubbleMenu } from 'svelte-tiptap';
+	import { createEventDispatcher } from 'svelte';
+
+	const dispatch = createEventDispatcher();
 
 	export let editor;
 
 	function handleAdd() {
 		console.log('add');
+		dispatch('message', {
+			action: 'add'
+		});
 	}
 </script>
 

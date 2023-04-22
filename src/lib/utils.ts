@@ -1,3 +1,6 @@
+import type { ArgumentInstance } from './stores/analysis';
+import { v4 as uuidv4 } from 'uuid';
+
 export const serializeNonPOJOs = (obj: any) => {
 	return structuredClone(obj);
 };
@@ -53,32 +56,35 @@ export function downloadFile(fileContent: BlobPart, fileName: string, fileType: 
 	document.body.removeChild(link);
 }
 
-function getSubstringLocations(
-	paragraph: string,
-	objects: { text: string; claim_evidence?: string; claim?: string }[]
-): { text: { start: number; span: number }; evidence: { start: number; span: number } }[] {
-	const results: {
-		text: { start: number; span: number };
-		evidence: { start: number; span: number };
-	}[] = [];
-	for (const obj of objects) {
-		const textStart = paragraph.indexOf(obj.text.replace(/ ([,.'])/g, '$1'));
-		const textSpan = obj.text.length;
-		let evidenceStart: number = 0;
-		let evidenceSpan: number = 0;
-		if (obj.claim_evidence !== undefined) {
-			evidenceStart = paragraph.indexOf(obj.claim_evidence.replace(/ ([,.'])/g, '$1'));
-			evidenceSpan = obj.claim_evidence.length;
-		} else if (obj.claim !== undefined) {
-			evidenceStart = paragraph.indexOf(obj.claim.replace(/ ([,.'])/g, '$1'));
-			evidenceSpan = obj.claim.length;
-		}
-		results.push({
-			text: { start: textStart, span: textSpan },
-			evidence: { start: evidenceStart, span: evidenceSpan }
-		});
-	}
-	return results;
+export function parseArgument(argument: any, paragraph: string): ArgumentInstance {
+	// const text = argument.text.replace(/ ([,.'])/g, '$1');
+	console.log(paragraph);
+	console.log(argument.text);
+	const text = argument.text;
+	const textStart = paragraph.indexOf(text);
+	const textEnd = textStart + argument.text.length;
+	const arg: ArgumentInstance = {
+		uuid: uuidv4(),
+		confidence: argument.claim_score,
+		sufficiency: argument.sufficiency || Math.random(),
+		text: argument.text,
+		start: textStart,
+		end: textEnd
+	};
+	console.log('arg', arg);
+	return arg;
+	// let evidenceStart: number = 0;
+	// let evidenceSpan: number = 0;
+	//
+	// if (argument.claim_evidence !== undefined) {
+	// 	// Evidence found
+	// 	evidenceStart = paragraph.indexOf(argument.claim_evidence.replace(/ ([,.'])/g, '$1'));
+	// 	evidenceSpan = argument.claim_evidence.length;
+	// } else if (argument.claim !== undefined) {
+	// 	// Claim claim found
+	// 	evidenceStart = paragraph.indexOf(argument.claim.replace(/ ([,.'])/g, '$1'));
+	// 	evidenceSpan = argument.claim.length;
+	// }
 }
 
 export function getRandomLightHexColor(): string {
@@ -95,17 +101,8 @@ export function getRandomLightHexColor(): string {
 export function getTextFromRanges(paragraph: string, argument: any) {
 	console.log('argument: ', argument);
 	return {
-		claim: paragraph.slice(argument.text.start, argument.text.start + argument.text.span),
-		evidence: paragraph.slice(
-			argument.evidence.start,
-			argument.evidence.start + argument.evidence.span
-		)
+		text: paragraph.slice(argument.start, argument.end),
+		score: argument.confidence,
+		sufficiency: argument.sufficiency
 	};
-}
-
-export function parseMargot(
-	text: string,
-	content: { text: string; claim_evidence?: string | undefined; claim?: string | undefined }[]
-) {
-	return getSubstringLocations(text, content);
 }

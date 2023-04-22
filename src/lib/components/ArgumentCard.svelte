@@ -2,17 +2,18 @@
 	import type { ArgumentInstance } from '$lib/stores/analysis';
 
 	export let argument: ArgumentInstance;
+
+	let decimals = 2;
+	const confidence = argument.confidence.toFixed(decimals);
+	const sufficiency = argument.sufficiency.toFixed(decimals);
 </script>
 
-<div class="overflow-x-hidden p-2 border card bg-base-200">
+<div class="overflow-x-hidden rounded-md p-2 border card bg-base-200">
 	<div>
-		<h2 class="card-title">Claim</h2>
-		<!-- <p>{argument.claim_score}</p> -->
-		<p>{argument.claim}</p>
-		{#if argument.evidence}
-			<h2 class="card-title">Evidence</h2>
-			<!-- <p>{argument.evidence_score}</p> -->
-			<p>{argument.evidence || 'No evidence provided'}</p>
-		{/if}
+		<p class="text-sm text-justify">{argument.text.slice(0, 70) + '...'}</p>
+		<div class="flex flex-row gap-x-4">
+			<p>Confidence: {confidence}</p>
+			<p>Sufficiency: {sufficiency}</p>
+		</div>
 	</div>
 </div>
