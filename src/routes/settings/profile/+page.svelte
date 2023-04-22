@@ -3,7 +3,6 @@
   import { invalidateAll } from '$app/navigation';
   import { Icon, Pencil } from 'svelte-hero-icons';
   import { Input } from '$lib/components';
-  import { getImageURL } from '$lib/utils';
   import { page } from '$app/stores';
   let loading;
   $: loading = false;

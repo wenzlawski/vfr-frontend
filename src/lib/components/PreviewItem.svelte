@@ -1,9 +1,11 @@
 <script lang="ts">
   import { enhance } from '$app/forms';
+  import { IconFileDownload, IconTrash } from '@tabler/icons-svelte';
   import DocCard from './DocCard.svelte';
   export let document;
   $: modalOpen = false;
   import { getNotificationsContext } from 'svelte-notifications';
+  import { downloadFile } from '$lib/utils';
 
   const { addNotification } = getNotificationsContext();
 </script>
@@ -27,20 +29,39 @@
       use:enhance={() => {
         return async ({ result, update }) => {
           await update();
+          console.log(result);
           if (result.type === 'success') {
-            addNotification({
-              text: `Document ${result.data?.message}!`,
-              position: 'bottom-center',
-              type: 'success',
-              removeAfter: 2000
-            });
-          } else {
-            addNotification({
-              text: 'Error performing action.',
-              position: 'bottom-center',
-              type: 'error',
-              removeAfter: 2000
-            });
+            switch (result.data?.type) {
+              case 'download':
+                downloadFile(
+                  result.data.title + '\n\n' + result.data.content,
+                  'text_dl.txt',
+                  'text/plain'
+                );
+                // window.location.href = result.data.url;
+                break;
+              case 'delete':
+                addNotification({
+                  text: `Document ${result.data?.message}!`,
+                  position: 'bottom-center',
+                  type: 'success',
+                  removeAfter: 2000
+                });
+                break;
+            }
+            //   addNotification({
+            //     text: `Document ${result.data?.message}!`,
+            //     position: 'bottom-center',
+            //     type: 'success',
+            //     removeAfter: 2000
+            //   });
+            // } else {
+            //   addNotification({
+            //     text: 'Error performing action.',
+            //     position: 'bottom-center',
+            //     type: 'error',
+            //     removeAfter: 2000
+            //   });
           }
         };
       }}
@@ -53,7 +74,7 @@
             formaction="?/download"
             class="btn btn-square btn-outline"
           >
-            <ion-icon name="download-outline" size="large" />
+            <IconFileDownload />
           </button>
         </div>
         <div class="tooltip" data-tip="Trash">
@@ -62,7 +83,7 @@
             formaction="?/delete"
             class="btn btn-square btn-outline"
           >
-            <ion-icon name="trash-outline" size="large" />
+            <IconTrash />
           </button>
         </div>
       </div>

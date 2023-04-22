@@ -7,7 +7,7 @@ export const serializeNonPOJOs = (obj: any) => {
 
 export function debounce(func: any, wait: number) {
   let timeout: any;
-  return function (this: any, ...args: Parameters<any>) {
+  return function(this: any, ...args: Parameters<any>) {
     clearTimeout(timeout);
     timeout = setTimeout(() => func.apply(this, args), wait);
   };
@@ -36,7 +36,7 @@ export const validateData = async (
 };
 
 export function downloadFile(
-  fileContent: BlobPart,
+  fileContent: string,
   fileName: string,
   fileType: string
 ): void {
@@ -65,8 +65,6 @@ export function parseArgument(
   paragraph: string
 ): ArgumentInstance {
   // const text = argument.text.replace(/ ([,.'])/g, '$1');
-  console.log(paragraph);
-  console.log(argument.text);
   const text = argument.text;
   const textStart = paragraph.indexOf(text);
   const textEnd = textStart + argument.text.length;
@@ -78,7 +76,6 @@ export function parseArgument(
     start: textStart,
     end: textEnd
   };
-  console.log('arg', arg);
   return arg;
   // let evidenceStart: number = 0;
   // let evidenceSpan: number = 0;
@@ -92,6 +89,16 @@ export function parseArgument(
   //  evidenceStart = paragraph.indexOf(argument.claim.replace(/ ([,.'])/g, '$1'));
   //  evidenceSpan = argument.claim.length;
   // }
+}
+
+export function normalizeArguments(args: ArgumentInstance[]) {
+  const maxScore = Math.max(...args.map((arg) => arg.confidence));
+  const minScore = Math.min(...args.map((arg) => arg.confidence));
+  console.log(maxScore, minScore);
+  args.forEach((arg) => {
+    arg.confidence = (arg.confidence - minScore) / (maxScore - minScore);
+  });
+  return args;
 }
 
 export function getRandomLightHexColor(): string {

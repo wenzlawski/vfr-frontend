@@ -101,14 +101,14 @@
                         <li class="lg:pr-2">
                           <a class="" href="/documents">Documents</a>
                         </li>
-                        <li class="lg:pr-2">
+                        <li class="lg:pr-2 cursor-pointer">
                           <form
                             method="POST"
                             action="/documents?/create"
                             use:enhance
                             class="mx-auto"
                           >
-                            <label class=""
+                            <label class="cursor-pointer"
                               >+ New
                               <button type="submit" class="hidden" />
                             </label>

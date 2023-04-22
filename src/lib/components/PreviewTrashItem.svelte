@@ -1,5 +1,6 @@
 <script lang="ts">
   import { enhance } from '$app/forms';
+  import { IconRefresh, IconTrash } from '@tabler/icons-svelte';
   import DocCard from './DocCard.svelte';
   export let document;
   $: modalOpen = false;
@@ -54,7 +55,7 @@
             formaction="?/restore"
             class="btn btn-square btn-outline"
           >
-            <ion-icon name="refresh-outline" size="large" />
+            <IconRefresh />
           </button>
         </div>
         <div class="tooltip" data-tip="Delete">
@@ -63,7 +64,7 @@
             formaction="?/delete"
             class="btn btn-square btn-outline"
           >
-            <ion-icon name="trash-outline" size="large" />
+            <IconTrash />
           </button>
         </div>
       </div>

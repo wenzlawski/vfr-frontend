@@ -27,7 +27,7 @@
       <div class="divider" />
     </div>
     <div class="flex w-full h-full gap-x-4">
-      <ul class="menu bg-base-100 w-56 p-2 rounded-box">
+      <ul class="menu gap-y-2 bg-base-100 w-56 p-2 rounded-box">
         {#each navigation as navItem}
           <li>
             <a

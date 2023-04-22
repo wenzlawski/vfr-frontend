@@ -20,7 +20,7 @@
 
 <Notifications>
   <Navbar>
-    <main class="m-0 box-border flex-1">
+    <main class="m-0 box-border flex-1 h-[90vh]">
       <slot />
     </main>
     {#if showFooter}

@@ -1,5 +1,6 @@
 import { mergeAttributes, getMarkRange, Mark } from '@tiptap/core';
 import { Plugin, TextSelection } from 'prosemirror-state';
+import { getRandomLightHexColor } from './utils';
 
 export interface ArgumentSpanOptions {
   HTMLAttributes: Record<string, any>;
@@ -9,7 +10,13 @@ export interface ArgumentSpanOptions {
 declare module '@tiptap/core' {
   interface Commands<ReturnType> {
     argumentspan: {
-      setArgument: (attributes?: { color: string; id: string }) => ReturnType;
+      setArgument: (attributes?: {
+        id: string;
+        start: number;
+        end: number;
+        color?: string;
+        active?: boolean;
+      }) => ReturnType;
       toggleArgument: (attributes?: {
         color: string;
         id: string;
@@ -33,14 +40,54 @@ export const Arguments = Mark.create<ArgumentSpanOptions>({
     return {
       id: {
         default: null,
-        parseHTML: (element) => element.getAttribute('data-id'),
+        parseHTML: (element) => element.getAttribute('uuid'),
         renderHTML: (attributes) => {
           if (!attributes.id) {
             return {};
           }
 
           return {
-            'data-id': attributes.id
+            uuid: attributes.id
+          };
+        }
+      },
+      start: {
+        default: null,
+        parseHTML: (element) => element.getAttribute('start'),
+        renderHTML: (attributes) => {
+          if (!attributes.start) {
+            return {};
+          }
+
+          return {
+            start: attributes.start
+          };
+        }
+      },
+      end: {
+        default: null,
+        parseHTML: (element) => element.getAttribute('end'),
+        renderHTML: (attributes) => {
+          if (!attributes.end) {
+            return {};
+          }
+
+          return {
+            end: attributes.end
+          };
+        }
+      },
+      active: {
+        default: false,
+        parseHTML: (element) => element.getAttribute('active'),
+        renderHTML: (attributes) => {
+          if (!attributes.active) {
+            return {};
+          }
+
+          return {
+            active: attributes.active
+            // class: attributes.active ? 'active' : ''
           };
         }
       },
@@ -50,7 +97,9 @@ export const Arguments = Mark.create<ArgumentSpanOptions>({
           element.getAttribute('data-color') || element.style.backgroundColor,
         renderHTML: (attributes) => {
           return {
-            style: `background-color: ${attributes.color}; color: inherit`
+            style: attributes.active
+              ? `background-color: ${attributes.color}`
+              : `border-bottom: 3px solid ${attributes.color}`
           };
         }
       }
@@ -65,7 +114,7 @@ export const Arguments = Mark.create<ArgumentSpanOptions>({
   parseHTML() {
     return [
       {
-        tag: `span[data-type="${this.name}"]`
+        tag: `span[class="${this.name}"]`
       }
     ];
   },
@@ -73,7 +122,11 @@ export const Arguments = Mark.create<ArgumentSpanOptions>({
   renderHTML({ HTMLAttributes }) {
     return [
       'span',
-      mergeAttributes(this.options.HTMLAttributes, HTMLAttributes),
+      mergeAttributes(
+        { class: this.name },
+        this.options.HTMLAttributes,
+        HTMLAttributes
+      ),
       0
     ];
   },
@@ -83,6 +136,12 @@ export const Arguments = Mark.create<ArgumentSpanOptions>({
       setArgument:
         (attributes) =>
           ({ commands }) => {
+            if (attributes !== undefined) {
+              commands.setTextSelection({
+                from: attributes.start,
+                to: attributes.end
+              });
+            }
             return commands.setMark(this.name, attributes);
           },
       toggleArgument:
@@ -90,7 +149,7 @@ export const Arguments = Mark.create<ArgumentSpanOptions>({
           ({ commands }) => {
             return commands.toggleMark(this.name, attributes);
           },
-      unsetComment:
+      unsetArgument:
         () =>
           ({ commands }) =>
             commands.unsetMark('argument')

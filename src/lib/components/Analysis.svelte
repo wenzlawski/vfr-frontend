@@ -5,10 +5,10 @@
   import type { Editor } from 'svelte-tiptap';
   import { getRandomLightHexColor } from '$lib/utils';
   import { argData } from '$lib/data';
+  import { IconLockOpen, IconLock } from '@tabler/icons-svelte';
 
   export let analyze = (_model: string, _opts: any) => {};
   export let editor: Tiptap;
-  const editorStore = editor?.getEditor() as Readable<Editor>;
 
   function analyzeHandler() {
     analyze(settings.model, settings);
@@ -31,7 +31,7 @@
 <div class="mt-3 space-y-0">
   <div class="m-3">
     <h1 class="mb-2 text-xl">Annotations</h1>
-    <div class="flex flex-row gap-x-2">
+    <div class="flex flex-wrap gap-2 ">
       <button
         on:click={() => {
           isEditable = editor?.toggleEditable();
@@ -39,9 +39,9 @@
         class="btn btn-sm"
       >
         {#if isEditable}
-          <ion-icon name="lock-open-outline" />
+          <IconLockOpen />
         {:else}
-          <ion-icon name="lock-closed-outline" />
+          <IconLock />
         {/if}
       </button>
       <button
@@ -53,18 +53,22 @@
         {isArgumentModeEnabled ? 'Argument Mode' : 'Text mode'}
       </button>
       <button on:click={() => editor?.toggleArgument()} class="btn btn-sm">
-        Toggle
-      </button>
-      <button
-        on:click={() => editor?.setArgument(5, 10, 'x')}
-        class="btn btn-sm"
-      >
         Add
       </button>
       <button on:click={() => analyze('test', settings)} class="btn btn-sm"
         >Test</button
       >
-      <!-- <button class="btn"> Analyze </button> -->
+      <button on:click={() => editor?.deepClearArguments()} class="btn btn-sm">
+        Clear
+      </button>
+      <button
+        on:click={() => {
+          console.log(editor?.getEditor()?.getHTML());
+        }}
+        class="btn btn-sm"
+      >
+        HTML
+      </button>
     </div>
   </div>
   <div class="divider" />

@@ -1,6 +1,7 @@
 import { error, redirect } from '@sveltejs/kit';
 import { serializeNonPOJOs } from '$lib/utils';
 import {
+  getDocumentById,
   getDocumentsPreview,
   insertDocument,
   updateDocument
@@ -8,7 +9,7 @@ import {
 import { extract } from '@extractus/article-extractor';
 
 export const load = async ({ locals }) => {
-  const getUsersDocuments = async (userId) => {
+  const getUsersDocuments = async (userId: string) => {
     try {
       const documents = serializeNonPOJOs(await getDocumentsPreview(userId));
       return documents;
@@ -26,19 +27,20 @@ export const load = async ({ locals }) => {
 };
 
 export const actions = {
-  delete: async ({ request }) => {
+  delete: async ({ locals, request }) => {
     const data = await request.formData();
     const id = data.get('id') as string;
+    const userId = (await locals.getSession())?.user?.id;
 
     try {
-      await updateDocument(id, { deleted: true });
+      await updateDocument(id, { deleted: true }, userId);
     } catch (err: any) {
       console.log('Error: ', err);
       throw error(err.status, err.message);
     }
     return {
-      success: true,
-      message: 'deleted'
+      type: 'delete',
+      message: 'Successfully deleted document'
     };
   },
 
@@ -93,19 +95,22 @@ export const actions = {
     throw redirect(303, `/documents/${response._id}`);
   },
 
-  download: async ({ request }) => {
+  download: async ({ locals, request }) => {
     const data = await request.formData();
     const id = data.get('id') as string;
+    const userId = (await locals.getSession())?.user?.id;
 
     try {
-      console.log('downloading document...', id);
+      const document = await getDocumentById(id, userId);
+      return {
+        type: 'download',
+        content: document.content,
+        title: document.title,
+        message: 'Successfully downloaded document'
+      };
     } catch (err: any) {
       console.log('Error: ', err);
       throw error(err.status, err.message);
     }
-    return {
-      success: true,
-      message: 'downloaded'
-    };
   }
 };

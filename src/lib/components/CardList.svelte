@@ -1,9 +1,18 @@
 <script lang="ts">
+  import type { Writable } from 'svelte/store';
   import ArgumentCard from './ArgumentCard.svelte';
-  import { getTextFromRanges } from '$lib/utils';
 
   export let analysis: any;
-  export let content: string;
+
+  export let activeArgumentUuid: Writable<string>;
+
+  let sortBy;
+
+  $: analysis.sortArgs(sortBy);
+
+  // function setActiveArgument(event) {
+  //   $activeArgumentUuid = event.detail.uuid;
+  // }
 
   console.log($analysis.arguments);
 </script>
@@ -25,8 +34,18 @@
   </div>
 {:else}
   <div class="overflow-y-scroll p-2 space-y-2 h-full">
-    {#each $analysis.arguments as argument}
-      <ArgumentCard {argument} />
+    <label>
+      Sort by
+      <select bind:value={sortBy} class="select select-bordered select-sm">
+        <option value="sequential">Sequential</option>
+        <option value="conf_asc">Confidence (asc)</option>
+        <option value="conf_desc">Confidence (desc)</option>
+        <option value="suff_asc">Sufficiency (asc)</option>
+        <option value="suff_desc">Sufficiency (desc)</option>
+      </select>
+    </label>
+    {#each $analysis.arguments as argument (argument.uuid)}
+      <ArgumentCard {argument} {activeArgumentUuid} />
     {/each}
   </div>
 {/if}

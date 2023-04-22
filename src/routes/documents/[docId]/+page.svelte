@@ -7,7 +7,7 @@
   import { documentStore } from '$lib/stores/document';
   import { analysisStore } from '$lib/stores/analysis';
   import { rawData } from '$lib/data';
-  import { parseArgument } from '$lib/utils';
+  import { parseArgument, normalizeArguments } from '$lib/utils';
 
   export let data: PageData;
   let editor: Tiptap;
@@ -18,13 +18,16 @@
   docStore.init(data.document.document._doc);
 
   let pane = writable($docStore.tabSize || 0);
+  let activeArgumentUuid = writable('');
 
   let anaStore = analysisStore;
+  anaStore.clear();
 
   let hasAnalysis = false; // set to true if analysis is available
 
   function analyze(model: string, opts: any) {
     anaStore.init();
+    editor.getEditor()?.setEditable(false);
     switch (model) {
       case 'cnn':
         console.log("margot's model");
@@ -39,26 +42,26 @@
           .then((data) => {
             // Consuming the response data
             console.log('data', data);
-            const args = data.response
-              .map((arg) => parseArgument(arg, $docStore.content))
-              .filter(
-                (arg) => arg.start !== -1 && arg.confidence > opts.threshold
-              );
+            const args = normalizeArguments(
+              data.response.map((arg) => parseArgument(arg, $docStore.content))
+            ).filter(
+              (arg) => arg.start !== -1 && arg.confidence > opts.threshold
+            );
             anaStore.setArguments(args, $docStore.content);
-            console.log('arguments', $anaStore.arguments);
+            // console.log('arguments', $anaStore.arguments);
           });
         break;
       case 'test':
-        console.log($docStore.content);
+        // console.log($docStore.content);
         anaStore.setArguments(
-          rawData
-            .map((arg) => parseArgument(arg, $docStore.content))
-            .filter(
-              (arg) => arg.start !== -1 && arg.confidence > opts.threshold
-            ),
+          normalizeArguments(
+            rawData.map((arg) => parseArgument(arg, $docStore.content))
+          ).filter(
+            (arg) => arg.start !== -1 && arg.confidence > opts.threshold
+          ),
           $docStore.content
         );
-        console.log('arguments', $anaStore.arguments);
+        // console.log('arguments', $anaStore.arguments);
         break;
       default:
         console.log('default');
@@ -102,7 +105,12 @@
       <!--	</div> -->
       <!-- </div> -->
       <TitleInput content={docStore} />
-      <Tiptap bind:this={editor} argumentStore={anaStore} value={docStore} />
+      <Tiptap
+        bind:this={editor}
+        argumentStore={anaStore}
+        value={docStore}
+        {activeArgumentUuid}
+      />
     </div>
     <div
       class:hidden={$pane !== 0}
@@ -123,7 +131,7 @@
   >
   {#if $anaStore.hasAnalysis}
     <Pane snapSize={10} size={15}>
-      <CardList analysis={anaStore} content={$docStore.content} />
+      <CardList analysis={anaStore} {activeArgumentUuid} />
     </Pane>
   {/if}
   <Pane snapSize={10} size={$pane}>
@@ -142,6 +150,9 @@
   }
 
   .splitpanes.modern-theme {
+    .splitpanes__pane {
+      overflow-y: auto;
+    }
     .splitpanes__splitter {
       background-color: #ccc;
       position: relative;

@@ -3,6 +3,7 @@
   import DocCard from './DocCard.svelte';
   import { Modal } from '.';
   import { getNotificationsContext } from 'svelte-notifications';
+  import { IconFileDescription, IconWorldDownload } from '@tabler/icons-svelte';
 
   const { addNotification } = getNotificationsContext();
   let files;
@@ -31,7 +32,7 @@
             <div
               class="text-md sm:text-lg btn btn-outline btn-square hover:font-bold"
             >
-              <ion-icon name="document-outline" size="large" />
+              <IconFileDescription />
             </div>
           </div>
         </div>
@@ -83,7 +84,7 @@
             <div
               class="text-md sm:text-lg btn btn-outline btn-square hover:font-bold"
             >
-              <ion-icon name="globe-outline" size="large" />
+              <IconWorldDownload />
             </div>
           </div>
         </div>

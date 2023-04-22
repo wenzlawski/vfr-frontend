@@ -19,7 +19,7 @@ export interface ArgumentInstance {
 }
 
 const initialState = {
-  arguments: [],
+  arguments: [] as ArgumentInstance[],
   text: '',
   isRunning: false,
   hasAnalysis: false
@@ -56,12 +56,52 @@ const createAnaStore = () => {
       });
     },
 
+    async clear() {
+      update((doc) => {
+        doc.arguments = [];
+        doc.hasAnalysis = false;
+        doc.text = '';
+        return doc;
+      });
+    },
+
     async setArguments(args: any, text: string) {
       update((doc) => {
         doc.arguments = args;
         doc.text = text;
         doc.hasAnalysis = true;
         doc.isRunning = false;
+        return doc;
+      });
+    },
+
+    sortArgs(by: string) {
+      console.log('soring by ', by);
+      update((doc) => {
+        switch (by) {
+          case 'conf_asc':
+            doc.arguments = doc.arguments.sort(
+              (a, b) => b.confidence - a.confidence
+            );
+            break;
+          case 'conf_desc':
+            doc.arguments = doc.arguments.sort(
+              (a, b) => a.confidence - b.confidence
+            );
+            break;
+          case 'suff_asc':
+            doc.arguments = doc.arguments.sort(
+              (a, b) => b.sufficiency - a.sufficiency
+            );
+            break;
+          case 'suff_desc':
+            doc.arguments = doc.arguments.sort(
+              (a, b) => a.sufficiency - b.sufficiency
+            );
+            break;
+          default:
+            doc.arguments = doc.arguments.sort((a, b) => a.start - b.start);
+        }
         return doc;
       });
     },
